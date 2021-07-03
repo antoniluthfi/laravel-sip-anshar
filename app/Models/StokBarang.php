@@ -12,19 +12,25 @@ class StokBarang extends Model
     protected $table = 'stok_barang';
     protected $fillable = [
         'nama_barang',
-        'kategori',
+        'id_kategori',
+        'berat',
         'harga_user',
         'harga_reseller',
-        'bjb',
-        'bjm',
-        'lnu',
-        'tdc',
-        'total_pack',
         'paket'
     ];
+
+    public function detailStokBarang()
+    {
+        return $this->hasMany(DetailStokBarang::class, 'id_barang', 'id')->with('cabang')->select('id_barang', 'stok_tersedia', 'stok_dapat_dijual', 'id_cabang');
+    }
 
     public function paketBarang()
     {
         return $this->hasMany(PaketBarang::class, 'id_paket', 'id')->with('paket');
+    }
+
+    public function kategori()
+    {
+        return $this->hasOne(KategoriBarang::class, 'id', 'id_kategori')->select('id', 'nama_kategori');
     }
 }

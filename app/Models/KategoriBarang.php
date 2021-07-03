@@ -12,11 +12,5 @@ class KategoriBarang extends Model
     protected $table = 'kategori_barang';
     protected $fillable = [
         'nama_kategori',
-        'id_purchasing'
     ];
-
-    public function purchasing()
-    {
-        return $this->hasOne(User::class, 'id', 'id_purchasing')->select('id', 'name');
-    }
 }

@@ -14,9 +14,8 @@ class CreateFakturPenjualanTable extends Migration
     public function up()
     {
         Schema::create('faktur_penjualan', function (Blueprint $table) {
-            $table->id('no_bukti');
             $table->string('no_faktur');
-            $table->foreignId('id_pesanan_penjualan');
+            $table->string('kode_pesanan');
             $table->foreignId('id_marketing');
             $table->foreignId('user_id');
             $table->foreignId('id_bank')->nullable();

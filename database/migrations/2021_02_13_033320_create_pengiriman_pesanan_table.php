@@ -14,7 +14,7 @@ class CreatePengirimanPesananTable extends Migration
     public function up()
     {
         Schema::create('pengiriman_pesanan', function (Blueprint $table) {
-            $table->foreignId('id_pesanan_penjualan');
+            $table->string('kode_pesanan');
             $table->string('kode_pengiriman');
             $table->foreignId('id_marketing');
             $table->foreignId('user_id');

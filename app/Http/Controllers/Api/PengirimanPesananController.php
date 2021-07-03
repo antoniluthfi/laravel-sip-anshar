@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\PengirimanPesanan;
+use App\Models\PesananPenjualan;
+use App\Models\FakturPenjualan;
+use Haruncpi\LaravelIdGenerator\IdGenerator;
 
 class PengirimanPesananController extends Controller
 {
@@ -21,7 +24,7 @@ class PengirimanPesananController extends Controller
 
     public function getDataById($id)
     {
-        $pengirimanPesanan = PengirimanPesanan::with('pesananPenjualan', 'fakturPenjualan', 'user', 'ekspedisi', 'cabang')->where('id_pesanan_penjualan', $id)->first();
+        $pengirimanPesanan = PengirimanPesanan::with('pesananPenjualan', 'fakturPenjualan', 'user', 'ekspedisi', 'cabang')->where('kode_pengiriman', $id)->first();
 
         return response()->json([
             'status' => 'OK',
@@ -43,17 +46,15 @@ class PengirimanPesananController extends Controller
 
     public function create(Request $request)
     {
-        $data = DB::select("SELECT id_pesanan_penjualan FROM pengiriman_pesanan ORDER BY id_pesanan_penjualan DESC LIMIT 1");
-        if(count($data) !== 0) {
-            $id = $data[0]->id_pesanan_penjualan + 1;
-        } else {
-            $id = 1;
-        }
+        $kode_pengiriman = IdGenerator::generate([
+            'table' => 'pengiriman_pesanan',
+            'length' => 10,
+            'prefix' => 'DO.',
+            'field' => 'kode_pengiriman'
+        ]);
 
         $input = $request->all();
-
-        date_default_timezone_set('Asia/Jakarta');
-        $input['kode_pengiriman'] = "DO." . date('Ymd') . ".$id";
+        $input['kode_pengiriman'] = $kode_pengiriman;
         $pengirimanPesanan = PengirimanPesanan::create($input);
 
         return response()->json([
@@ -66,9 +67,13 @@ class PengirimanPesananController extends Controller
 
     public function update(Request $request, $id)
     {
-        $pengirimanPesanan = PengirimanPesanan::where('id_pesanan_penjualan', $id)->first();
+        $pengirimanPesanan = PengirimanPesanan::where('kode_pesanan', $id)->first();
         $input = $request->all();
         $pengirimanPesanan->fill($input)->save();
+
+        $pesananPenjualan = PesananPenjualan::where('kode_pesanan', $id)->first();
+        $pesananPenjualan->total_harga = $request->total_harga;
+        $pesananPenjualan->update();
 
         return response()->json([
             'status' => 'OK',
@@ -78,9 +83,28 @@ class PengirimanPesananController extends Controller
         ], 200);
     }
 
+    public function deletePesananPenjualan($id)
+    {
+        $pengirimanPesanan = PengirimanPesanan::where('kode_pesanan', $id)->first();
+        $pengirimanPesanan->delete();
+
+        return response()->json([
+            'status' => 'OK',
+            'message' => 'Data berhasil dihapus',
+            'errors' => null,
+            'result' => null
+        ], 200);
+    }
+
     public function delete($id)
     {
-        $pengirimanPesanan = PengirimanPesanan::where('id_pesanan_penjualan', $id)->first();
+        $pengirimanPesanan = PengirimanPesanan::where('kode_pengiriman', $id)->first();
+        $fakturPenjualan = FakturPenjualan::where('kode_pesanan', $pengirimanPesanan->kode_pesanan)->first();
+        
+        if($fakturPenjualan) {
+            $fakturPenjualan->delete();
+        }
+        
         $pengirimanPesanan->delete();
 
         return response()->json([

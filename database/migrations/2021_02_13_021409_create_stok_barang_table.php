@@ -16,14 +16,10 @@ class CreateStokBarangTable extends Migration
         Schema::create('stok_barang', function (Blueprint $table) {
             $table->id();
             $table->string('nama_barang');
-            $table->string('kategori');
+            $table->foreignId('id_kategori');
+            $table->integer('berat')->default(0);
             $table->double('harga_user', 15, 0);
             $table->double('harga_reseller', 15, 0);
-            $table->integer('bjb');
-            $table->integer('bjm');
-            $table->integer('lnu');
-            $table->integer('tdc');
-            $table->integer('total_pack')->default(0);
             $table->boolean('paket')->default(false);
             $table->timestamps();
         });

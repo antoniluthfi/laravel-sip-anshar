@@ -10,10 +10,5 @@ class Cabang extends Model
     use HasFactory;
 
     protected $table = 'cabang';
-    protected $fillable = [
-        'nama_cabang',
-        'email',
-        'nomorhp',
-        'alamat'
-    ];
+    protected $guarded = [];
 }

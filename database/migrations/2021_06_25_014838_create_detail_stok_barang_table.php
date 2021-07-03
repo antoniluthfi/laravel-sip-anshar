@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCabangTable extends Migration
+class CreateDetailStokBarangTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,11 @@ class CreateCabangTable extends Migration
      */
     public function up()
     {
-        Schema::create('cabang', function (Blueprint $table) {
-            $table->id();
-            $table->string('nama_cabang');
-            $table->string('singkatan');
-            $table->string('email')->unique();
-            $table->string('nomorhp');
-            $table->text('alamat');
+        Schema::create('detail_stok_barang', function (Blueprint $table) {
+            $table->foreignId('id_barang');
+            $table->foreignId('id_cabang');
+            $table->integer('stok_tersedia');
+            $table->integer('stok_dapat_dijual');
             $table->timestamps();
         });
     }
@@ -31,6 +29,6 @@ class CreateCabangTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('cabang');
+        Schema::dropIfExists('detail_stok_barang');
     }
 }

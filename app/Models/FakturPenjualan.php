@@ -10,10 +10,11 @@ class FakturPenjualan extends Model
     use HasFactory;
 
     protected $table = 'faktur_penjualan';
-    protected $primaryKey = 'no_bukti';
+    protected $primaryKey = 'no_faktur';
+    public $incrementing = false;
     protected $fillable = [
         'no_faktur',
-        'id_pesanan_penjualan',
+        'kode_pesanan',
         'id_marketing',
         'user_id',
         'id_bank',
@@ -25,7 +26,7 @@ class FakturPenjualan extends Model
 
     public function pesananPenjualan()
     {
-        return $this->hasOne(PesananPenjualan::class, 'id', 'id_pesanan_penjualan')->with('barang', 'penjual');
+        return $this->hasOne(PesananPenjualan::class, 'kode_pesanan', 'kode_pesanan')->with('penjual');
     }
 
     public function marketing()

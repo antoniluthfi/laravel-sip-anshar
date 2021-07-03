@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\StokBarang;
+use App\Models\DetailStokBarang;
 
 class StokBarangController extends Controller
 {
@@ -13,13 +15,13 @@ class StokBarangController extends Controller
         return response()->json([
             'status' => 'OK',
             'errors' => null,
-            'result' => StokBarang::with('paketBarang')->get()
+            'result' => StokBarang::with('kategori', 'paketBarang')->get()
         ], 200);
     }
 
     public function getDataById($id)
     {
-        $stok = StokBarang::with('paketBarang')->where('id', $id)->first();
+        $stok = StokBarang::with('kategori', 'paketBarang', 'detailStokBarang')->where('id', $id)->first();
         return response()->json([
             'status' => 'OK',
             'errors' => null,
@@ -27,19 +29,33 @@ class StokBarangController extends Controller
         ], 200);
     }
 
-    public function getDataAvailable()
+    public function getDataAvailable($id_cabang)
     {
-        $stok = StokBarang::with('paketBarang')
-                        ->where('bjb', '!=', 0)
-                        ->orWhere('bjm', '!=', 0)
-                        ->orWhere('lnu', '!=', 0)
-                        ->orWhere('tdc', '!=', 0)
-                        ->get();
+        $id_cabang = $id_cabang ? $id_cabang : Auth::user()->id_cabang;
+        $stok = StokBarang::all();
+        $arr = [];
+        foreach ($stok as $key => $val) {
+            $arr[] = [
+                'id' => $val->id,
+                'nama_barang' => $val->nama_barang,
+                'harga_user' => $val->harga_user,
+                'harga_reseller' => $val->harga_reseller,
+                'detail' => DetailStokBarang::with('cabang')->select('stok_tersedia', 'stok_dapat_dijual', 'id_cabang')
+                            ->where('id_barang', $val->id)
+                            ->where('id_cabang', $id_cabang)
+                            ->where('stok_tersedia', '!=', 0)
+                            ->get()
+            ];
 
+            if(count($arr[$key]['detail']) == 0) {
+                unset($arr[$key]);
+            }
+        }
+        
         return response()->json([
             'status' => 'OK',
             'errors' => null,
-            'result' => $stok
+            'result' => $arr
         ], 200);
     }
 
@@ -59,6 +75,19 @@ class StokBarangController extends Controller
         $input = $request->all();
         $stok = StokBarang::create($input);
 
+        $input = [];
+        $details = (array) $request->detail;
+        foreach($details as $detail) {
+            $input = [
+                'id_barang' => $stok->id,
+                'id_cabang' => $detail['id_cabang'],
+                'stok_tersedia' => $detail['stok_tersedia'],
+                'stok_dapat_dijual' => $detail['stok_dapat_dijual']
+            ];
+
+            DetailStokBarang::create($input);
+        }
+
         return response()->json([
             'status' => 'OK',
             'message' => 'Data berhasil ditambahkan',
@@ -73,6 +102,24 @@ class StokBarangController extends Controller
         $input = $request->all();
         $stok->fill($input)->save();
 
+        $detailStokBarang = DetailStokBarang::where('id_barang', $id)->get();
+        foreach ($detailStokBarang as $detail) {
+            $detail->delete();
+        }
+
+        $input = [];
+        $details = (array) $request->detail;
+        foreach($details as $detail) {
+            $input = [
+                'id_barang' => $id,
+                'id_cabang' => $detail['id_cabang'],
+                'stok_tersedia' => $detail['stok_tersedia'],
+                'stok_dapat_dijual' => $detail['stok_dapat_dijual']
+            ];
+
+            DetailStokBarang::create($input);
+        }
+
         return response()->json([
             'status' => 'OK',
             'message' => 'Data berhasil diupdate',
@@ -81,56 +128,15 @@ class StokBarangController extends Controller
         ], 200);
     }
 
-    public function updateFromPesananPenjualan(Request $request, $id)
-    {
-        $stok = StokBarang::find($id);
-        $input = [];
-
-        if(stripos(strtolower($request->cabang), 'banjarbaru') != -1 || stripos(strtolower($request->cabang), 'bjb') != -1) {
-            $cabang = 'bjb';
-        } elseif(stripos(strtolower($request->cabang), 'landasan ulin') != -1 || stripos(strtolower($request->cabang), 'lnu') != -1) {
-            $cabang = 'lnu';
-        } elseif(stripos(strtolower($request->cabang), 'banjarmasin') != -1 || stripos(strtolower($request->cabang), 'bjm') != -1) {
-            $cabang = 'bjm';
-        } elseif(stripos(strtolower($request->cabang), 'twincom distribution center') != -1 || stripos(strtolower($request->cabang), 'tdc') == 0) {
-            $cabang = 'tdc';
-        } else {
-            $cabang = strtolower($request->cabang);
-        }
-
-        $input[$cabang] = $stok[$cabang] - $request->jumlah;
-        if($input[$cabang] >= 0) {
-            if($cabang !== $request->cabang) {
-                $stok->fill($input)->save();
-    
-                return response()->json([
-                    'status' => 'OK',
-                    'errors' => null,
-                    'message' => 'Data berhasil diupdate',
-                    'result' => $stok
-                ], 200);
-            }
-
-            return response()->json([
-                'status' => 'Failed',
-                'errors' => null,
-                'message' => 'Data gagal diupdate',
-                'result' => null
-            ], 500);
-        }
-
-        return response()->json([
-            'status' => 'Failed',
-            'errors' => null,
-            'message' => 'Data gagal diupdate',
-            'result' => null
-        ], 500);
-    }
-
     public function delete($id)
     {
         $stok = StokBarang::find($id);
         $stok->delete();
+
+        $detailStokBarang = DetailStokBarang::where('id_barang', $id)->get();
+        foreach ($detailStokBarang as $barang) {
+            $barang->delete();
+        }
 
         return response()->json([
             'status' => 'OK',

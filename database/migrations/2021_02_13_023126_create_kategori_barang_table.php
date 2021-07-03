@@ -16,7 +16,6 @@ class CreateKategoriBarangTable extends Migration
         Schema::create('kategori_barang', function (Blueprint $table) {
             $table->id();
             $table->string('nama_kategori');
-            $table->foreignId('id_purchasing');
             $table->timestamps();
         });
     }

@@ -10,28 +10,18 @@ class PengirimanPesanan extends Model
     use HasFactory;
 
     protected $table = 'pengiriman_pesanan';
-    protected $primaryKey = 'id_pesanan_penjualan';
-    protected $fillable = [
-        'id_pesanan_penjualan',
-        'kode_pengiriman',
-        'id_marketing',
-        'user_id',
-        'tanggal_pengiriman',
-        'alamat',
-        'ongkir',
-        'id_ekspedisi',
-        'id_cabang',
-        'keterangan'
-    ];
+    protected $primaryKey = 'kode_pengiriman';
+    public $incrementing = false;
+    protected $guarded = [];
 
     public function pesananPenjualan()
     {
-        return $this->hasOne(PesananPenjualan::class, 'id', 'id_pesanan_penjualan')->with('barang', 'penjual', 'syaratPembayaran');
+        return $this->hasOne(PesananPenjualan::class, 'kode_pesanan', 'kode_pesanan')->with('penjual', 'syaratPembayaran');
     }
 
     public function fakturPenjualan()
     {
-        return $this->hasOne(FakturPenjualan::class, 'id_pesanan_penjualan', 'id_pesanan_penjualan');
+        return $this->hasOne(FakturPenjualan::class, 'kode_pesanan', 'kode_pesanan');
     }
 
     public function user()

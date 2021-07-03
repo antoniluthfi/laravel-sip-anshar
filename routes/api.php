@@ -21,6 +21,7 @@ use App\Http\Controllers\Api\PengerjaanController;
 use App\Http\Controllers\Api\DetailPengerjaanController;
 use App\Http\Controllers\Api\PengembalianController;
 use App\Http\Controllers\Api\PembayaranController;
+use App\Http\Controllers\Api\RajaOngkirController;
 
 /*
 |--------------------------------------------------------------------------
@@ -61,12 +62,11 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::delete('cabang/{id}', [CabangController::class, 'delete']);
 
     Route::get('stok-barang', [StokBarangController::class, 'index']);
-    Route::get('stok-barang/data/available', [StokBarangController::class, 'getDataAvailable']);
+    Route::get('stok-barang/data/available/{id_cabang}', [StokBarangController::class, 'getDataAvailable']);
     Route::get('stok-barang/jenis/non-paket', [StokBarangController::class, 'getDataNonPaket']);
     Route::get('stok-barang/{id}', [StokBarangController::class, 'getDataById']);
     Route::post('stok-barang', [StokBarangController::class, 'create']);
     Route::put('stok-barang/{id}', [StokBarangController::class, 'update']);
-    Route::put('stok-barang/pesanan-penjualan/{id}', [StokBarangController::class, 'updateFromPesananPenjualan']);
     Route::delete('stok-barang/{id}', [StokBarangController::class, 'delete']);
 
     Route::get('kategori-barang', [KategoriBarangController::class, 'index']);
@@ -93,6 +93,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::get('pengiriman-pesanan/marketing/{id_marketing}', [PengirimanPesananController::class, 'getDataByIdMarketing']);
     Route::post('pengiriman-pesanan', [PengirimanPesananController::class, 'create']);
     Route::put('pengiriman-pesanan/{id}', [PengirimanPesananController::class, 'update']);
+    Route::delete('pengiriman-pesanan/kode-pesanan/{id}', [PengirimanPesananController::class, 'deletePesananPenjualan']);
     Route::delete('pengiriman-pesanan/{id}', [PengirimanPesananController::class, 'delete']);
 
     Route::get('ekspedisi', [EkspedisiController::class, 'index']);
@@ -114,13 +115,13 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::delete('bank/{id}', [BankController::class, 'delete']);
 
     Route::get('faktur-penjualan', [FakturPenjualanController::class, 'index']);
-    Route::get('faktur-penjualan/{no_bukti}', [FakturPenjualanController::class, 'getDataById']);
+    Route::get('faktur-penjualan/{no_faktur}', [FakturPenjualanController::class, 'getDataById']);
     Route::get('faktur-penjualan/marketing/{marketing_id}', [FakturPenjualanController::class, 'getDataByMarketingId']);
     Route::get('faktur-penjualan/pemasukan/{kategori}/{marketing_id}', [FakturPenjualanController::class, 'getDataPemasukanByMarketingId']);
     Route::get('faktur-penjualan/pemasukan/per/kategori-barang/{marketing_id}', [FakturPenjualanController::class, 'getDataPemasukanByKategori']);
     Route::post('faktur-penjualan', [FakturPenjualanController::class, 'create']);
-    Route::put('faktur-penjualan/{no_bukti}', [FakturPenjualanController::class, 'update']);
-    Route::delete('faktur-penjualan/{no_bukti}', [FakturPenjualanController::class, 'delete']);
+    Route::put('faktur-penjualan/{no_faktur}', [FakturPenjualanController::class, 'update']);
+    Route::delete('faktur-penjualan/{no_faktur}', [FakturPenjualanController::class, 'delete']);
 
     Route::get('paket-barang', [PaketBarangController::class, 'index']);
     Route::post('paket-barang', [PaketBarangController::class, 'create']);
@@ -160,4 +161,8 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::get('pembayaran', [PembayaranController::class, 'create']);
     Route::get('pembayaran/{no_pembayaran}', [PembayaranController::class, 'update']);
     Route::get('pembayaran/{no_pembayaran}', [PembayaranController::class, 'delete']);
+
+    Route::get('rajaongkir/provinsi', [RajaOngkirController::class, 'getProvinsi']);
+    Route::get('rajaongkir/kota/{id_provinsi}', [RajaOngkirController::class, 'getKotaByIdProvinsi']);
+    Route::post('rajaongkir/ongkir', [RajaOngkirController::class, 'getOngkir']);
 });

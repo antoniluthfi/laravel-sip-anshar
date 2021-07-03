@@ -13,7 +13,7 @@ class KategoriBarangController extends Controller
         return response()->json([
             'status' => 'OK',
             'errors' => null,
-            'result' => KategoriBarang::with('purchasing')->get()
+            'result' => KategoriBarang::get()
         ], 200);
     }
 
@@ -22,7 +22,7 @@ class KategoriBarangController extends Controller
         return response()->json([
             'status' => 'OK',
             'errors' => null,
-            'result' => KategoriBarang::with('purchasing')->first()
+            'result' => KategoriBarang::where('id', $id)->first()
         ], 200);
     }
 

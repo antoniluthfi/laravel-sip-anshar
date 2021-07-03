@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCabangTable extends Migration
+class CreateKotaTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,10 @@ class CreateCabangTable extends Migration
      */
     public function up()
     {
-        Schema::create('cabang', function (Blueprint $table) {
+        Schema::create('kota', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_cabang');
-            $table->string('singkatan');
-            $table->string('email')->unique();
-            $table->string('nomorhp');
-            $table->text('alamat');
+            $table->foreignId('id_provinsi');
+            $table->string('nama_kota');
             $table->timestamps();
         });
     }
@@ -31,6 +28,6 @@ class CreateCabangTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('cabang');
+        Schema::dropIfExists('kota');
     }
 }

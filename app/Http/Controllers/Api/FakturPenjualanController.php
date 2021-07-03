@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\FakturPenjualan;
+use App\Models\Cabang;
+use Haruncpi\LaravelIdGenerator\IdGenerator;
 
 class FakturPenjualanController extends Controller
 {
@@ -18,9 +20,9 @@ class FakturPenjualanController extends Controller
         ], 200);
     }
 
-    public function getDataById($no_bukti)
+    public function getDataById($no_faktur)
     {
-        $fakturPenjualan = FakturPenjualan::with('pesananPenjualan', 'marketing', 'user', 'bank')->where('no_bukti', $no_bukti)->first();
+        $fakturPenjualan = FakturPenjualan::with('pesananPenjualan', 'marketing', 'user', 'bank')->where('no_faktur', $no_faktur)->first();
 
         return response()->json([
             'status' => 'OK',
@@ -52,7 +54,8 @@ class FakturPenjualanController extends Controller
             if($kategori === 'harian') {
                 $fakturPenjualan = DB::select("SELECT SUM(nominal) AS pemasukan, DATE_FORMAT(Created_At,'%Y-%m-%d') AS day FROM `faktur_penjualan` GROUP BY day, id_marketing HAVING day = curdate() AND id_marketing = '$marketing_id'");
             } elseif($kategori === 'bulanan') {
-                $fakturPenjualan = DB::select("SELECT SUM(nominal) AS pemasukan, DATE_FORMAT(Created_At,'%Y-%m') AS month FROM `faktur_penjualan` GROUP BY month, id_marketing HAVING id_marketing = '$marketing_id' ORDER BY month DESC LIMIT 1");
+                // $fakturPenjualan = DB::select("SELECT SUM(nominal) AS pemasukan, DATE_FORMAT(Created_At,'%Y-%m') AS month FROM `faktur_penjualan` GROUP BY month, id_marketing HAVING id_marketing = '$marketing_id' ORDER BY month DESC LIMIT 1");
+                $fakturPenjualan = FakturPenjualan::whereMonth('created_at', date('m'))->where('id_marketing', $marketing_id)->sum('nominal');
             }
         }
 
@@ -68,32 +71,33 @@ class FakturPenjualanController extends Controller
         if($marketing_id === 'all') {
             $fakturPenjualan = DB::select("SELECT 
                     faktur_penjualan.id_marketing, 
-                    pesanan_penjualan.id_barang, 
                     stok_barang.nama_barang, 
                     SUM(faktur_penjualan.nominal) AS pemasukan, 
                     SUM(pesanan_penjualan.kuantitas) AS total_penjualan, 
                     stok_barang.kategori, 
                     DATE_FORMAT(faktur_penjualan.Created_At,'%Y-%m') AS month FROM `faktur_penjualan` 
                 LEFT JOIN pesanan_penjualan ON faktur_penjualan.id_pesanan_penjualan = pesanan_penjualan.id 
-                LEFT JOIN stok_barang ON pesanan_penjualan.id_barang = stok_barang.id 
                 GROUP BY month, faktur_penjualan.id_marketing, stok_barang.kategori 
                 ORDER BY month DESC"
             );
         } else {
-            $fakturPenjualan = DB::select("SELECT 
-                    faktur_penjualan.id_marketing, 
-                    pesanan_penjualan.id_barang, 
-                    stok_barang.nama_barang, 
-                    SUM(faktur_penjualan.nominal) AS pemasukan, 
-                    COUNT(stok_barang.kategori) AS total_penjualan, 
-                    stok_barang.kategori, 
-                    DATE_FORMAT(faktur_penjualan.Created_At,'%Y-%m') AS month FROM `faktur_penjualan` 
-                LEFT JOIN pesanan_penjualan ON faktur_penjualan.id_pesanan_penjualan = pesanan_penjualan.id 
-                LEFT JOIN stok_barang ON pesanan_penjualan.id_barang = stok_barang.id 
-                GROUP BY month, faktur_penjualan.id_marketing, stok_barang.kategori 
-                HAVING faktur_penjualan.id_marketing = '$marketing_id' 
-                ORDER BY month DESC LIMIT 1"
-            );
+            // $fakturPenjualan = DB::select("SELECT 
+            //         faktur_penjualan.id_marketing, 
+            //         stok_barang.nama_barang, 
+            //         SUM(faktur_penjualan.nominal) AS pemasukan, 
+            //         COUNT(stok_barang.kategori) AS total_penjualan, 
+            //         stok_barang.kategori, 
+            //         DATE_FORMAT(faktur_penjualan.Created_At,'%Y-%m') AS month FROM `faktur_penjualan` 
+            //     LEFT JOIN pesanan_penjualan ON faktur_penjualan.id_pesanan_penjualan = pesanan_penjualan.id 
+            //     GROUP BY month, faktur_penjualan.id_marketing, stok_barang.kategori 
+            //     HAVING faktur_penjualan.id_marketing = '$marketing_id' 
+            //     ORDER BY month DESC LIMIT 1"
+            // );
+
+            $fakturPenjualan = FakturPenjualan::select('nominal')
+                            ->where('id_marketing', $marketing_id)
+                            ->whereMonth('created_at', date('m'))
+                            ->get();
         }
 
         return response()->json([
@@ -105,20 +109,17 @@ class FakturPenjualanController extends Controller
 
     public function create(Request $request)
     {
-        date_default_timezone_set('Asia/Jakarta');
+        $cabang = Cabang::findOrFail($request->id_cabang);
+
+        $no_faktur = IdGenerator::generate([
+            'table' => 'faktur_penjualan',
+            'length' => 15,
+            'prefix' => 'TS' . $cabang->singkatan . '.',
+            'field' => 'no_faktur'
+        ]);
 
         $input = $request->all();
-        if(!array_key_exists('no_faktur', $input)) {
-            $data = DB::select("SELECT no_bukti FROM faktur_penjualan ORDER BY no_bukti DESC LIMIT 1");
-            if(count($data) === 0) {
-                $id = 1;
-            } else {
-                $id = $data[0]->no_bukti + 1;
-            }
-
-            $input['no_faktur'] = date('dmY') . ".$id";
-        }
-
+        $input['no_faktur'] = $no_faktur;
         $fakturPenjualan = FakturPenjualan::create($input);
 
         return response()->json([
@@ -129,9 +130,9 @@ class FakturPenjualanController extends Controller
         ], 200);
     }
 
-    public function update(Request $request, $no_bukti)
+    public function update(Request $request, $no_faktur)
     {
-        $fakturPenjualan = FakturPenjualan::where('no_bukti', $no_bukti)->first();
+        $fakturPenjualan = FakturPenjualan::where('no_faktur', $no_faktur)->first();
 
         $input = $request->all();
         $fakturPenjualan->fill($input)->save();
@@ -144,9 +145,9 @@ class FakturPenjualanController extends Controller
         ], 200);
     }
 
-    public function delete($no_bukti)
+    public function delete($no_faktur)
     {
-        $fakturPenjualan = FakturPenjualan::where('no_bukti', $no_bukti)->first();
+        $fakturPenjualan = FakturPenjualan::where('no_faktur', $no_faktur)->first();
         $fakturPenjualan->delete();
 
         return response()->json([
