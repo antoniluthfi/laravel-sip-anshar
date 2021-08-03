@@ -15,13 +15,13 @@ class UserSeeder extends Seeder
     public function run()
     {
         User::create([
-            'email' => 'marketing@gmail.com',
-            'name' => 'marketing',
-            'hak_akses' => 'marketing',
-            'nomorhp' => '082176438793',
+            'email' => 'anonimgama2@gmail.com',
+            'name' => 'Luthfi',
+            'hak_akses' => 'teknisi',
+            'nomorhp' => '087865226783',
             'alamat' => 'Landasan Ulin',
             'id_cabang' => '1',
-            'password' => bcrypt('marketing123'),
+            'password' => bcrypt('luthfi'),
             'status' => 'aktif',
         ]);
     }

@@ -12,7 +12,7 @@ class UsersController extends Controller
     public function index()
     {
         return response()->json([
-            'status' => 'OK', 
+            'status' => 'OK',
             'errors' => null,
             'result' => User::with('cabang')->get()
         ], 200);
@@ -23,7 +23,7 @@ class UsersController extends Controller
         $user = Auth::user();
         $user['cabang'] = Auth::user()->cabang;
         return response()->json([
-            'status' => 'OK', 
+            'status' => 'OK',
             'errors' => null,
             'result' => $user
         ], 200);
@@ -69,19 +69,6 @@ class UsersController extends Controller
         ], 200);
     }
 
-    public function getDataPelanggan()
-    {
-        $user = User::with('cabang')->where('hak_akses', 'user')
-                    ->orWhere('hak_akses', 'reseller')
-                    ->get();
-
-        return response()->json([
-            'status' => 'OK',
-            'errors' => null,
-            'result' => $user
-        ], 200);
-    }
-
     public function create(Request $request)
     {
         $input = $request->all();
@@ -89,8 +76,8 @@ class UsersController extends Controller
         $user = User::create($input);
 
         return response()->json([
-            'status' => 'OK', 
-            'message' => 'Data berhasil ditambahkan', 
+            'status' => 'OK',
+            'message' => 'Data berhasil ditambahkan',
             'errors' => null,
             'result' => $user
         ], 200);
@@ -103,7 +90,7 @@ class UsersController extends Controller
         $user = $user->fill($input)->save();
 
         return response()->json([
-            'status' => 'OK', 
+            'status' => 'OK',
             'message' => 'Data berhasil diupdate',
             'errors' => null,
             'result' => $user

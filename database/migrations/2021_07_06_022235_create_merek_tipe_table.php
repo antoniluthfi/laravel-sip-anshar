@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePengembalianTable extends Migration
+class CreateMerekTipeTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,10 @@ class CreatePengembalianTable extends Migration
      */
     public function up()
     {
-        Schema::create('pengembalian', function (Blueprint $table) {
-            $table->id('no_pengembalian');
-            $table->foreignId('id_arus_kas')->nullable();
-            $table->string('no_service');
-            $table->boolean('status_pengembalian')->default(false);
+        Schema::create('merek_tipe', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('id_barang_jasa');
+            $table->string('nama');
             $table->timestamps();
         });
     }
@@ -29,6 +28,6 @@ class CreatePengembalianTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('pengembalian');
+        Schema::dropIfExists('merek_tipe');
     }
 }

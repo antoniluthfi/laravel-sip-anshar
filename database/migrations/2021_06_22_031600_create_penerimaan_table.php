@@ -14,11 +14,13 @@ class CreatePenerimaanTable extends Migration
     public function up()
     {
         Schema::create('penerimaan', function (Blueprint $table) {
-            $table->id('no_service');
+            $table->string('no_service');
             $table->foreignId('no_pengerjaan');
             $table->string('jenis_penerimaan');
+            $table->foreignId('id_admin');
             $table->foreignId('id_customer');
             $table->foreignId('id_cabang');
+            $table->foreignId('id_barang_jasa');
             $table->foreignId('id_barang');
             $table->string('kondisi_barang');
             $table->string('problem');

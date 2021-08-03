@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePengembalianTable extends Migration
+class CreateTeknisiPJTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,10 @@ class CreatePengembalianTable extends Migration
      */
     public function up()
     {
-        Schema::create('pengembalian', function (Blueprint $table) {
-            $table->id('no_pengembalian');
-            $table->foreignId('id_arus_kas')->nullable();
-            $table->string('no_service');
-            $table->boolean('status_pengembalian')->default(false);
+        Schema::create('teknisi_pj', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('no_pengerjaan');
+            $table->foreignId('id_teknisi');
             $table->timestamps();
         });
     }
@@ -29,6 +28,6 @@ class CreatePengembalianTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('pengembalian');
+        Schema::dropIfExists('teknisi_pj');
     }
 }

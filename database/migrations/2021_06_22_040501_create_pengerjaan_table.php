@@ -19,6 +19,7 @@ class CreatePengerjaanTable extends Migration
             $table->datetime('waktu_selesai');
             $table->integer('progress')->default(0);
             $table->boolean('status_pengerjaan')->default(false);
+            $table->double('nominal', 15, 2);
             $table->text('keterangan');
             $table->timestamps();
         });

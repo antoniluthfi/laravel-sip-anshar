@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePembayaranTable extends Migration
+class CreateArusKasTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,15 @@ class CreatePembayaranTable extends Migration
      */
     public function up()
     {
-        Schema::create('pembayaran', function (Blueprint $table) {
-            $table->id('no_bukti');
-            $table->foreignId('no_service');
+        Schema::create('arus_kas', function (Blueprint $table) {
+            $table->id();
             $table->foreignId('id_sandi_transaksi');
-            $table->double('nominal', 12, 5);
-            $table->double('total_biaya', 12, 5);
-            $table->double('sisa_biaya', 12, 5);
+            $table->foreignId('id_admin');
+            $table->foreignId('id_cabang');
+            $table->integer('nominal');
+            $table->integer('total_biaya');
+            $table->integer('sisa_biaya');
+            $table->boolean('masuk');
             $table->boolean('status_pembayaran')->default(false);
             $table->text('keterangan');
             $table->timestamps();
@@ -33,6 +35,6 @@ class CreatePembayaranTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('pembayaran');
+        Schema::dropIfExists('arus_kas');
     }
 }

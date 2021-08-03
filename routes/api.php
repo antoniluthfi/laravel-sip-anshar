@@ -20,8 +20,10 @@ use App\Http\Controllers\Api\PenerimaanController;
 use App\Http\Controllers\Api\PengerjaanController;
 use App\Http\Controllers\Api\DetailPengerjaanController;
 use App\Http\Controllers\Api\PengembalianController;
-use App\Http\Controllers\Api\PembayaranController;
+use App\Http\Controllers\Api\ArusKasController;
 use App\Http\Controllers\Api\RajaOngkirController;
+use App\Http\Controllers\Api\BarangJasaController;
+use App\Http\Controllers\Api\MerekTipeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,7 +42,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
-Route::group(['middleware' => 'auth:api'], function() {
+Route::group(['middleware' => 'auth:api'], function () {
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('logoutall', [AuthController::class, 'logoutall']);
 
@@ -49,7 +51,6 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::get('user/{id}', [UsersController::class, 'getUserById']);
     Route::get('user/name/{name}', [UsersController::class, 'getUserByName']);
     Route::get('user/role/{role}', [UsersController::class, 'getUserByRole']);
-    Route::get('user/data/pelanggan', [UsersController::class, 'getDataPelanggan']);
     Route::get('user/cabang/{cabang}/role/{role}', [UsersController::class, 'getUserByRole']);
     Route::post('user', [UsersController::class, 'create']);
     Route::put('user/{id}', [UsersController::class, 'update']);
@@ -135,11 +136,13 @@ Route::group(['middleware' => 'auth:api'], function() {
 
     Route::get('penerimaan', [PenerimaanController::class, 'index']);
     Route::get('penerimaan/{no_service}', [PenerimaanController::class, 'getDataByNoService']);
+    Route::get('penerimaan/user/{id}', [PenerimaanController::class, 'getDataByIdAdmin']);
     Route::post('penerimaan', [PenerimaanController::class, 'create']);
     Route::put('penerimaan/{no_service}', [PenerimaanController::class, 'update']);
     Route::delete('penerimaan/{no_service}', [PenerimaanController::class, 'delete']);
 
     Route::get('pengerjaan', [PengerjaanController::class, 'index']);
+    Route::get('pengerjaan/teknisi/{id}', [PengerjaanController::class, 'getDataByIdTeknisi']);
     Route::get('pengerjaan/{no_pengerjaan}', [PengerjaanController::class, 'getDataByNoPengerjaan']);
     Route::post('pengerjaan', [PengerjaanController::class, 'create']);
     Route::put('pengerjaan/{no_pengerjaan}', [PengerjaanController::class, 'update']);
@@ -154,15 +157,30 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::get('pengembalian/{no_pengembalian}', [PengembalianController::class, 'getDataByNoPengembalian']);
     Route::post('pengembalian', [PengembalianController::class, 'create']);
     Route::put('pengembalian/{no_pengembalian}', [PengembalianController::class, 'update']);
+    Route::put('pengembalian/reset/{no_pengembalian}', [PengembalianController::class, 'reset']);
     Route::delete('pengembalian/{no_pengembalian}', [PengembalianController::class, 'delete']);
 
-    Route::get('pembayaran', [PembayaranController::class, 'index']);
-    Route::get('pembayaran/{no_pembayaran}', [PembayaranController::class, 'getDataByNoPembayaran']);
-    Route::get('pembayaran', [PembayaranController::class, 'create']);
-    Route::get('pembayaran/{no_pembayaran}', [PembayaranController::class, 'update']);
-    Route::get('pembayaran/{no_pembayaran}', [PembayaranController::class, 'delete']);
+    Route::get('arus-kas', [ArusKasController::class, 'index']);
+    Route::get('arus-kas/{id}', [ArusKasController::class, 'getDataById']);
+    Route::post('arus-kas', [ArusKasController::class, 'create']);
+    Route::put('arus-kas/{id}', [ArusKasController::class, 'update']);
+    Route::delete('arus-kas/{id}', [ArusKasController::class, 'delete']);
 
     Route::get('rajaongkir/provinsi', [RajaOngkirController::class, 'getProvinsi']);
     Route::get('rajaongkir/kota/{id_provinsi}', [RajaOngkirController::class, 'getKotaByIdProvinsi']);
     Route::post('rajaongkir/ongkir', [RajaOngkirController::class, 'getOngkir']);
+
+    Route::get('barang-jasa', [BarangJasaController::class, 'index']);
+    Route::get('barang-jasa/{id}', [BarangJasaController::class, 'getDataById']);
+    Route::get('barang-jasa/jenis/{jenis}', [BarangJasaController::class, 'getDataByJenis']);
+    Route::post('barang-jasa', [BarangJasaController::class, 'create']);
+    Route::put('barang-jasa/{id}', [BarangJasaController::class, 'update']);
+    Route::delete('barang-jasa/{id}', [BarangJasaController::class, 'delete']);
+
+    Route::get('merek-tipe', [MerekTipeController::class, 'index']);
+    Route::get('merek-tipe/{id}', [MerekTipeController::class, 'getDataById']);
+    Route::get('merek-tipe/kategori/{id}', [MerekTipeController::class, 'getDataByKategori']);
+    Route::post('merek-tipe', [MerekTipeController::class, 'create']);
+    Route::put('merek-tipe/{id}', [MerekTipeController::class, 'update']);
+    Route::delete('merek-tipe/{id}', [MerekTipeController::class, 'delete']);
 });

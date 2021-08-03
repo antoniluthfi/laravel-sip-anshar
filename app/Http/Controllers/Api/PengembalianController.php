@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\ArusKas;
 use Illuminate\Http\Request;
 use App\Models\Pengembalian;
 
@@ -13,13 +14,13 @@ class PengembalianController extends Controller
         return response()->json([
             'status' => 'OK',
             'errors' => null,
-            'result' => Pengembalian::all()
+            'result' => Pengembalian::with('penerimaan')->get()
         ]);
     }
 
     public function getDataByNoPengembalian($no_pengembalian)
     {
-        $pengembalian = Pengembalian::where('no_pengembalian', $no_pengembalian)->first();
+        $pengembalian = Pengembalian::with('penerimaan')->where('no_pengembalian', $no_pengembalian)->first();
     
         return response()->json([
             'status' => 'OK',
@@ -43,9 +44,23 @@ class PengembalianController extends Controller
 
     public function update(Request $request, $no_pengembalian)
     {
-        $input = $request->all();
+        $arusKas = ArusKas::create([
+            'id_sandi_transaksi' => $request->id_sandi_transaksi, 
+            'id_admin' => $request->id_admin,
+            'id_cabang' => $request->id_cabang,
+            'nominal' => $request->nominal,
+            'total_biaya' => $request->nominal,
+            'sisa_biaya' => 0,
+            'status_pembayaran' => 1,
+            'masuk' => 1,
+            'keterangan' => 'Pembayaran servis'
+        ]);
+
         $pengembalian = Pengembalian::where('no_pengembalian', $no_pengembalian)->first();
-        $pengembalian->fill($input)->save();
+        $pengembalian->update([
+            'id_arus_kas' => $arusKas->id,
+            'status_pengembalian' => $request->status_pengembalian
+        ]);
 
         return response()->json([
             'status' => 'OK',
@@ -53,6 +68,21 @@ class PengembalianController extends Controller
             'errors' => null,
             'result' => $pengembalian
         ], 200); 
+    }
+
+    public function reset($no_pengembalian)
+    {
+        $pengembalian = Pengembalian::where('no_pengembalian', $no_pengembalian)->first();
+        $pengembalian->update([
+            'status_pengembalian' => 0,
+            'id_arus_kas' => 0
+        ]);
+
+        return response()->json([
+            'status' => 'OK',
+            'message' => 'Data berhasil direset',
+            'errors' => null,
+        ], 200);
     }
 
     public function delete($no_pengembalian)
