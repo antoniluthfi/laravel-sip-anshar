@@ -62,7 +62,7 @@ class PenerimaanController extends Controller
         }
 
         unset($input['teknisi']);
-        $penerimaan = Penerimaan::create($input);
+        Penerimaan::create($input);
 
         Pengerjaan::create([
             'no_pengerjaan' => $input['no_pengerjaan'],

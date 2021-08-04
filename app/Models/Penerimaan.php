@@ -43,4 +43,9 @@ class Penerimaan extends Model
     {
         return $this->hasOne(MerekTipe::class, 'id', 'id_barang');
     }
+
+    public function teknisiPj()
+    {
+        return $this->hasMany(TeknisiPJ::class, 'no_pengerjaan', 'no_pengerjaan')->with('teknisi');
+    }
 }

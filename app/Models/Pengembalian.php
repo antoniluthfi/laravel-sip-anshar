@@ -17,4 +17,9 @@ class Pengembalian extends Model
     {
         return $this->belongsTo(Penerimaan::class, 'no_service', 'no_service')->with('customer', 'barangJasa', 'pengerjaan');
     }
+
+    public function arusKas()
+    {
+        return $this->belongsTo(ArusKas::class, 'id_arus_kas', 'id');
+    }
 }

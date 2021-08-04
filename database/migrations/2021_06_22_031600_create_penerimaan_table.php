@@ -22,9 +22,13 @@ class CreatePenerimaanTable extends Migration
             $table->foreignId('id_cabang');
             $table->foreignId('id_barang_jasa');
             $table->foreignId('id_barang');
+            $table->string('sn')->nullable();
             $table->string('kondisi_barang');
             $table->string('problem');
             $table->string('request');
+            $table->boolean('data_penting')->default(0);
+            $table->string('estimasi');
+            $table->string('kelengkapan')->nullable();
             $table->timestamps();
         });
     }
