@@ -20,7 +20,7 @@ class CetakLaporanController extends Controller
     public function cetakLaporan($tipeLaporan, $str = null)
     {
         if($tipeLaporan === 'stok-barang') {
-            $data = StokBarang::all();
+            $data = StokBarang::with('detailStokBarang')->get();
             $array = ['data' => $data];
         } elseif($tipeLaporan === 'data-pelanggan') {
             if($str === 'reseller') {
@@ -34,6 +34,14 @@ class CetakLaporanController extends Controller
             $array = [
                 'data' => $data,
                 'role' => $str
+            ];
+        } elseif($tipeLaporan === 'data-pelanggan-2') {
+            $data = User::where('hak_akses', 'reseller')
+                        ->orWhere('hak_akses', 'user')
+                        ->get();
+            // dd($data);
+            $array = [
+                'data' => $data,
             ];
         } elseif($tipeLaporan === 'pesanan-penjualan') {
             $data = PesananPenjualan::with('barang', 'pelanggan', 'penjual', 'pengirimanPesanan', 'fakturPenjualan', 'syaratPembayaran')->where('id', $str)->first();
@@ -251,7 +259,7 @@ class CetakLaporanController extends Controller
             AND (arus_kas.created_at BETWEEN '$dari' AND '$sampai')
             ORDER BY sandi_transaksi.jenis_transaksi ASC"
         );
-        // dd($dataCount);
+        // dd($dataCount[0]->nama_cabang);
 
         $data2 = [
             'nama_admin' => $admin,

@@ -34,7 +34,7 @@ class PenerimaanController extends Controller
         return response()->json([
             'status' => 'OK',
             'errors' => null,
-            'result' => Penerimaan::with('pengerjaan', 'admin', 'customer', 'cabang', 'barangJasa', 'barang')->where('no_service', $no_service)->first()
+            'result' => Penerimaan::with('pengerjaan', 'admin', 'customer', 'cabang', 'barangJasa', 'barang', 'teknisiPj')->where('no_service', $no_service)->first()
         ]);
     }
 

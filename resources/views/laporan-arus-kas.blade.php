@@ -80,11 +80,11 @@ for ($i = 0; $i < count($data); $i++) {
         
         @for ($i = 0; $i < count($dataCount); $i++)
             @php
-                if($dataCount[$i]->nama_cabang === 'Banjarbaru') {
+                if(strpos($dataCount[$i]->nama_cabang, 'Banjarbaru')) {
                     $sandi_transaksi = 'ST.BJB.' . $dataCount[$i]->id_sandi_transaksi . ' - ' . $dataCount[$i]->nama_transaksi;
-                } elseif($dataCount[$i]->nama_cabang === 'Landasan Ulin') {
+                } elseif(strpos($dataCount[$i]->nama_cabang, 'Landasan Ulin')) {
                     $sandi_transaksi = 'ST.LNU.' . $dataCount[$i]->id_sandi_transaksi . ' - ' . $dataCount[$i]->nama_transaksi;
-                } elseif ($dataCount[$i]->nama_cabang === 'Banjarmasin') {
+                } elseif (strpos($dataCount[$i]->nama_cabang, 'Banjarmasin')) {
                     $sandi_transaksi = 'ST.BJM.' . $dataCount[$i]->id_sandi_transaksi . ' - ' . $dataCount[$i]->nama_transaksi;
                 }
 

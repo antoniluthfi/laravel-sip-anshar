@@ -30,6 +30,30 @@ class PengerjaanController extends Controller
         ]);
     }
 
+    public function getTotalPendingan($id)
+    {
+        $pengerjaan = TeknisiPJ::with('pengerjaan')->where('id_teknisi', $id)->get();
+
+        $selesai = 0;
+        $belum_selesai = 0;
+        foreach ($pengerjaan as $val) {
+            if($val->pengerjaan->status_pengerjaan) {
+                $selesai += 1;
+            } else {
+                $belum_selesai += 1;
+            }
+        }
+
+        return response()->json([
+            'status' => 'OK',
+            'errors' => null,
+            'result' => [
+                'selesai' => $selesai,
+                'belum_selesai' => $belum_selesai
+            ]
+        ]);
+    }
+
     public function getDataByNoPengerjaan($no_pengerjaan)
     {
         return response()->json([

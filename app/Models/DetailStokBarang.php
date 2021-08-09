@@ -25,6 +25,6 @@ class DetailStokBarang extends Model
 
     public function cabang()
     {
-        return $this->hasOne(Cabang::class, 'id', 'id_cabang')->select('id', 'nama_cabang');
+        return $this->hasOne(Cabang::class, 'id', 'id_cabang')->select('id', 'nama_cabang', 'singkatan');
     }
 }

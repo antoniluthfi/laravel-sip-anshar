@@ -144,7 +144,7 @@ $now = date("d-m-Y");
             {{-- <p class="lead ml-2 mt-0 mb-0">: {{ $data->kelengkapan }}</p>      --}}
             {{-- <p class="lead ml-2 mt-0 mb-0">: {{ !$data->keterangan ? '-' : $data->keterangan }}</p> --}}
             <p class="lead ml-2 mt-0 mb-0">: {{ $data->request }}</p>
-            <p class="lead ml-2 mt-0 mb-0">: {{ $data->estimasi }}</p>
+            <p class="lead ml-2 mt-0 mb-0">: {{ $data->estimasi }} Hari</p>
         </div>
     </div>
 

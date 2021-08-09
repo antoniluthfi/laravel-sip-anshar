@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="{{ public_path('css/app.css') }}">
-    <title>Stok Barang</title>
+    <title>Data Pelanggan</title>
 </head>
 <body>
     <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
@@ -24,17 +24,15 @@
         </div>            
     </nav><br> 
 
-    <h3 class="display-5">Laporan Stok Barang</h3>
+    <h3 class="display-5">Laporan Data Pelanggan</h3>
     <table class="table table-bordered">
         <thead>
             <tr>
                 <th class="display-6">No</th>
-                <th class="display-6">Nama Barang</th>
-                <th class="display-6">Kategori</th>
-                <th class="display-6">Harga User</th>
-                <th class="display-6">Harga Reseller</th>
-                <th class="display-6">Stok Tersedia</th>
-                <th class="display-6">Stok Dapat Dijual</th>
+                <th class="display-6">Nama</th>
+                <th class="display-6">Email</th>
+                <th class="display-6">Nomor HP</th>
+                <th class="display-6">Alamat</th>
             </tr>
         </thead>
         <tbody>
@@ -44,20 +42,10 @@
             @foreach ($data as $item)
                 <tr>
                     <td class="display-6">{{ $no }}</td>
-                    <td class="display-6">{{ $item->nama_barang }}</td>
-                    <td class="display-6">{{ $item->kategori->nama_kategori }}</td>
-                    <td class="display-6 text-right">Rp. {{ number_format($item->harga_user) }}</td>
-                    <td class="display-6 text-right">Rp. {{ number_format($item->harga_reseller) }}</td>
-                    <td class="display-6">
-                        @foreach ($item->detailStokBarang as $detail)
-                            <p>{{ $detail->cabang->singkatan }} : {{ $detail->stok_tersedia }}</p>
-                        @endforeach
-                    </td>
-                    <td class="display-6">
-                        @foreach ($item->detailStokBarang as $detail)
-                            <p>{{ $detail->cabang->singkatan }} : {{ $detail->stok_dapat_dijual }}</p>
-                        @endforeach
-                    </td>
+                    <td class="display-6">{{ ucwords($item->name) }}</td>
+                    <td class="display-6">{{ $item->email }}</td>
+                    <td class="display-6">{{ $item->nomorhp }}</td>
+                    <td class="display-6">{{ $item->alamat }}</td>
                 </tr>
                 @php
                     $no++;

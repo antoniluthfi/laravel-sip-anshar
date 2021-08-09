@@ -27,7 +27,7 @@ class CreatePenerimaanTable extends Migration
             $table->string('problem');
             $table->string('request');
             $table->boolean('data_penting')->default(0);
-            $table->string('estimasi');
+            $table->integer('estimasi');
             $table->string('kelengkapan')->nullable();
             $table->timestamps();
         });

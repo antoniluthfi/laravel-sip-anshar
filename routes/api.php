@@ -54,7 +54,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('user/cabang/{cabang}/role/{role}', [UsersController::class, 'getUserByRole']);
     Route::post('user', [UsersController::class, 'create']);
     Route::put('user/{id}', [UsersController::class, 'update']);
-    Route::delete('user', [UsersController::class, 'delete']);
+    Route::delete('user/{id}', [UsersController::class, 'delete']);
 
     Route::get('cabang', [CabangController::class, 'index']);
     Route::get('cabang/{id}', [CabangController::class, 'getDataById']);
@@ -143,6 +143,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     Route::get('pengerjaan', [PengerjaanController::class, 'index']);
     Route::get('pengerjaan/teknisi/{id}', [PengerjaanController::class, 'getDataByIdTeknisi']);
+    Route::get('pengerjaan/total/pendingan/{id}', [PengerjaanController::class, 'getTotalPendingan']);
     Route::get('pengerjaan/{no_pengerjaan}', [PengerjaanController::class, 'getDataByNoPengerjaan']);
     Route::post('pengerjaan', [PengerjaanController::class, 'create']);
     Route::put('pengerjaan/{no_pengerjaan}', [PengerjaanController::class, 'update']);

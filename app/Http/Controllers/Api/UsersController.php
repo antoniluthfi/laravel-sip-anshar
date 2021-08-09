@@ -51,7 +51,17 @@ class UsersController extends Controller
 
     public function getUserByRole($role)
     {
-        $user = User::with('cabang')->where('hak_akses', $role)->get();
+        if($role === 'pelanggan') {
+            $user = User::with('cabang')
+                        ->where('hak_akses', 'user')
+                        ->orWhere('hak_akses', 'reseller')
+                        ->get();
+        } else {
+            $user = User::with('cabang')
+                        ->where('hak_akses', $role)
+                        ->get();
+        }
+
         return response()->json([
             'status' => 'OK',
             'errors' => null,
