@@ -40,6 +40,7 @@ class StokBarangController extends Controller
                 'nama_barang' => $val->nama_barang,
                 'harga_user' => $val->harga_user,
                 'harga_reseller' => $val->harga_reseller,
+                'berat' => $val->berat,
                 'detail' => DetailStokBarang::with('cabang')->select('stok_tersedia', 'stok_dapat_dijual', 'id_cabang')
                             ->where('id_barang', $val->id)
                             ->where('id_cabang', $id_cabang)

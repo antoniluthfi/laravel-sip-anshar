@@ -21,6 +21,7 @@ class CreatePesananPenjualanTable extends Migration
             $table->foreignId('id_penjual');
             $table->foreignId('id_syarat_pembayaran');
             $table->foreignId('id_cabang');
+            $table->bigInteger('total_berat')->default(0);
             $table->text('keterangan')->nullable();
             $table->timestamps();
         });

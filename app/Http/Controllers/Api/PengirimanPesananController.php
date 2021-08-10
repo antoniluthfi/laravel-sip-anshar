@@ -69,8 +69,9 @@ class PengirimanPesananController extends Controller
     {
         $pengirimanPesanan = PengirimanPesanan::where('kode_pesanan', $id)->first();
         $input = $request->all();
+        unset($input['total_harga']);
         $pengirimanPesanan->fill($input)->save();
-
+        
         $pesananPenjualan = PesananPenjualan::where('kode_pesanan', $id)->first();
         $pesananPenjualan->total_harga = $request->total_harga;
         $pesananPenjualan->update();

@@ -58,8 +58,10 @@ class PesananPenjualanController extends Controller
 
     public function create(Request $request)
     {
+        // otentikasi user
         $user = User::findOrFail($request->user_id);
 
+        // generate kode pesanan
         $kode_pesanan = IdGenerator::generate([
             'table' => 'pesanan_penjualan',
             'length' => 10,
@@ -67,33 +69,45 @@ class PesananPenjualanController extends Controller
             'field' => 'kode_pesanan'
         ]);
 
+        // proses input detail pesanan penjualan
         $total_harga_keseluruhan = 0;
-        $get_detail_stok;
+        $total_berat = 0;
         foreach ($request->barang as $barang) {
+            // cek stok barang
             $stok_barang = StokBarang::findOrFail($barang['id_barang']);
+
+            // cek user atau reseller untuk tentukan harga
             if($user->hak_akses === 'user') {
                 $harga = $stok_barang->harga_user;
             } else {
                 $harga = $stok_barang->harga_reseller;
             }
 
+            // hitung total harga
             $total_harga = (int) $barang['kuantitas'] * (int) $harga;
             $total_harga_keseluruhan += (int) $total_harga;
+
+            // hitung total berat barang
+            $total_berat += (int) $barang['berat'];
     
+            // cek stok barang sesuai cabang
             $get_detail_stok = DB::select("SELECT * FROM `detail_stok_barang` WHERE id_barang=" . $barang['id_barang'] . " AND id_cabang=" . $request->id_cabang);
 
+            // update stok cabang
             $stok_tersedia = (int) $get_detail_stok[0]->stok_tersedia - (int) $barang['kuantitas'];
             $stok_dapat_dijual = (int) $get_detail_stok[0]->stok_dapat_dijual - (int) $barang['kuantitas'];
 
             DB::select("UPDATE `detail_stok_barang` SET `stok_tersedia`=" . $stok_tersedia . ",`stok_dapat_dijual`=" . $stok_dapat_dijual . " WHERE id_barang=" . $barang['id_barang'] . " AND id_cabang=" . $request->id_cabang);
 
+            // buat detail pesanan penjualan
             $input = [
                 'kode_pesanan' => $kode_pesanan,
                 'id_barang' => $barang['id_barang'],
                 'kuantitas' => $barang['kuantitas'],
                 'total_harga' => $total_harga
             ];
-            $detailPesananPenjualan = DetailPesananPenjualan::create($input);
+
+            DetailPesananPenjualan::create($input);
         }
 
         $harga_diskon = 0;
@@ -117,6 +131,7 @@ class PesananPenjualanController extends Controller
             'id_penjual' => Auth::user()->id,
             'id_syarat_pembayaran' => $request->id_syarat_pembayaran,
             'id_cabang' => $request->id_cabang,
+            'total_berat' => $total_berat,
             'keterangan' => $request->keterangan
         ];
 
