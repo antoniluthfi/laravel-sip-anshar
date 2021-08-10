@@ -19,6 +19,6 @@ class DetailPesananPenjualan extends Model
 
     public function barang()
     {
-        return $this->hasOne(StokBarang::class, 'id', 'id_barang')->select('id', 'nama_barang', 'id_kategori', 'harga_user', 'harga_reseller');
+        return $this->hasOne(StokBarang::class, 'id', 'id_barang')->select('id', 'nama_barang', 'id_kategori', 'harga_user', 'harga_reseller')->with('kategori');
     }
 }

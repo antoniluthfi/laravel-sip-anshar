@@ -29,6 +29,11 @@ class FakturPenjualan extends Model
         return $this->hasOne(PesananPenjualan::class, 'kode_pesanan', 'kode_pesanan')->with('penjual');
     }
 
+    public function detailPesananPenjualan()
+    {
+        return $this->hasMany(DetailPesananPenjualan::class, 'kode_pesanan', 'kode_pesanan')->with('barang');
+    }
+
     public function marketing()
     {
         return $this->hasOne(User::class, 'id', 'id_marketing')->select('id', 'name');

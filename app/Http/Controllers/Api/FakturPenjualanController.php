@@ -81,20 +81,8 @@ class FakturPenjualanController extends Controller
                 ORDER BY month DESC"
             );
         } else {
-            // $fakturPenjualan = DB::select("SELECT 
-            //         faktur_penjualan.id_marketing, 
-            //         stok_barang.nama_barang, 
-            //         SUM(faktur_penjualan.nominal) AS pemasukan, 
-            //         COUNT(stok_barang.kategori) AS total_penjualan, 
-            //         stok_barang.kategori, 
-            //         DATE_FORMAT(faktur_penjualan.Created_At,'%Y-%m') AS month FROM `faktur_penjualan` 
-            //     LEFT JOIN pesanan_penjualan ON faktur_penjualan.id_pesanan_penjualan = pesanan_penjualan.id 
-            //     GROUP BY month, faktur_penjualan.id_marketing, stok_barang.kategori 
-            //     HAVING faktur_penjualan.id_marketing = '$marketing_id' 
-            //     ORDER BY month DESC LIMIT 1"
-            // );
-
-            $fakturPenjualan = FakturPenjualan::select('nominal')
+            $fakturPenjualan = FakturPenjualan::with('detailPesananPenjualan')
+                            ->select('nominal', 'kode_pesanan')
                             ->where('id_marketing', $marketing_id)
                             ->whereMonth('created_at', date('m'))
                             ->get();
