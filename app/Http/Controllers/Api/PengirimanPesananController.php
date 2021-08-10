@@ -87,14 +87,16 @@ class PengirimanPesananController extends Controller
     public function deletePesananPenjualan($id)
     {
         $pengirimanPesanan = PengirimanPesanan::where('kode_pesanan', $id)->first();
-        $pengirimanPesanan->delete();
-
-        return response()->json([
-            'status' => 'OK',
-            'message' => 'Data berhasil dihapus',
-            'errors' => null,
-            'result' => null
-        ], 200);
+        if($pengirimanPesanan) {
+            $pengirimanPesanan->delete();
+    
+            return response()->json([
+                'status' => 'OK',
+                'message' => 'Data berhasil dihapus',
+                'errors' => null,
+                'result' => null
+            ], 200);
+        }
     }
 
     public function delete($id)
