@@ -73,8 +73,10 @@ class PengirimanPesananController extends Controller
         unset($input['total_harga']);
         
         $ekspedisi = Ekspedisi::where('nama_ekspedisi', $request->ekspedisi)->first();
-        $input['id_ekspedisi'] = $ekspedisi->id;
-        unset($input['ekspedisi']);
+        if($ekspedisi) {
+            $input['id_ekspedisi'] = $ekspedisi->id;
+            unset($input['ekspedisi']);
+        }
 
         $pengirimanPesanan->fill($input)->save();
         

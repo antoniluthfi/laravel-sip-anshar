@@ -53,7 +53,7 @@ class CetakLaporanController extends Controller
             // dd($data);
             $array = ['data' => $data];
         } elseif($tipeLaporan === 'faktur-penjualan') {
-            $data = FakturPenjualan::with('pesananPenjualan', 'marketing', 'user', 'bank')->where('no_bukti', $str)->first();
+            $data = FakturPenjualan::with('pesananPenjualan', 'marketing', 'user', 'bank')->where('no_faktur', $str)->first();
             $array = ['data' => $data];
         }
 
