@@ -16,7 +16,7 @@ class PengirimanPesanan extends Model
 
     public function pesananPenjualan()
     {
-        return $this->hasOne(PesananPenjualan::class, 'kode_pesanan', 'kode_pesanan')->with('penjual', 'syaratPembayaran');
+        return $this->hasOne(PesananPenjualan::class, 'kode_pesanan', 'kode_pesanan')->with('penjual', 'pelanggan', 'syaratPembayaran', 'detailPesananPenjualan');
     }
 
     public function fakturPenjualan()

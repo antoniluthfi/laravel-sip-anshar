@@ -47,7 +47,7 @@
                 <p class="lead-2 ml-1 mt-0 mb-0 p-0">: {{ $data->pelanggan->nomorhp }}</p>
                 <p class="lead-2 ml-1 mt-0 mb-0 p-0">: C.{{ $data->pelanggan->id }}</p>
                 <p class="lead-2 ml-1 mt-0 mb-0 p-0">: {{ $data->kode_pesanan }}</p>
-                <p class="lead-2 ml-1 mt-0 mb-0 p-0">: {{ $data->keterangan }}</p>
+                <p class="lead-2 ml-1 mt-0 mb-0 p-0">: {{ $data->keterangan ? $data->keterangan : '-' }}</p>
             </div>
         </div>
     </div>

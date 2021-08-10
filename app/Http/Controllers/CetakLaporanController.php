@@ -48,7 +48,9 @@ class CetakLaporanController extends Controller
 
             $array = ['data' => $data];
         } elseif($tipeLaporan === 'pengiriman-pesanan') {
-            $data = PengirimanPesanan::with('pesananPenjualan', 'fakturPenjualan', 'user', 'ekspedisi', 'cabang')->where('id_pesanan_penjualan', $str)->first();
+            $data = PengirimanPesanan::with('pesananPenjualan', 'fakturPenjualan', 'user', 'ekspedisi', 'cabang')->where('kode_pengiriman', $str)->first();
+
+            // dd($data);
             $array = ['data' => $data];
         } elseif($tipeLaporan === 'faktur-penjualan') {
             $data = FakturPenjualan::with('pesananPenjualan', 'marketing', 'user', 'bank')->where('no_bukti', $str)->first();

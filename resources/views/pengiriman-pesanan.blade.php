@@ -39,7 +39,7 @@
                 <p class="lead-2 ml-1 mt-0 mb-0 p-0">: {{ $data->user->alamat }}</p>
                 <p class="lead-2 ml-1 mt-0 mb-0 p-0">: {{ $data->kode_pengiriman }}</p>
                 <p class="lead-2 ml-1 mt-0 mb-0 p-0">: {{ $data->ekspedisi->nama_ekspedisi }}</p>
-                <p class="lead-2 ml-1 mt-0 mb-0 p-0">: {{ $data->keterangan }}</p>
+                <p class="lead-2 ml-1 mt-0 mb-0 p-0">: {{ $data->keterangan ? $data->keterangan : '-' }}</p>
             </div>
         </div>
     </div>
@@ -56,39 +56,22 @@
             </tr>
         </thead>
         <tbody>
-            @if (count($data->pesananPenjualan->barang->paketBarang) > 0)
-                @foreach ($data as $item)
-                    <tr>
-                        <td class="display-6 text-center">{{ $item->id }}</td>
-                        <td class="display-6 text-center">{{ $item->paket->nama_barang }}</td>
-                        <td class="display-6 text-center">{{ $item->kuantitas }}</td>
-
-                        @if ($data->pesananPenjualan->penjual->hak_akses === 'user')
-                            <td class="display-6 text-right">Rp. {{ number_format($item->paket->harga_user) }}</td>
-                        @else
-                            <td class="display-6 text-right">Rp. {{ number_format($item->paket->harga_reseller) }}</td>
-                        @endif
-                        
-                        <td class="display-6 text-center">{{ $item->diskon }}</td>
-                        <td class="display-6 text-right">Rp. {{ number_format($item->total_harga) }}</td>
-                    </tr>
-                @endforeach     
-            @else
+            @foreach ($data->pesananPenjualan->detailPesananPenjualan as $item)
                 <tr>
-                    <td class="display-6 text-center">{{ $data->pesananPenjualan->id_barang }}</td>
-                    <td class="display-6 text-center">{{ $data->pesananPenjualan->barang->nama_barang }}</td>
-                    <td class="display-6 text-center">{{ $data->pesananPenjualan->kuantitas . " " . ucwords($data->pesananPenjualan->satuan) }}</td>
+                    <td class="display-6 text-center">{{ $item->id }}</td>
+                    <td class="display-6 text-center">{{ $item->barang->nama_barang }}</td>
+                    <td class="display-6 text-center">{{ $item->kuantitas }}</td>
 
-                    @if ($data->user->hak_akses === 'user')
-                        <td class="display-6 text-right">Rp. {{ number_format($data->pesananPenjualan->barang->harga_user) }}</td>
+                    @if ($data->pesananPenjualan->pelanggan->hak_akses === 'user')
+                        <td class="display-6 text-right">Rp. {{ number_format($item->barang->harga_user) }}</td>
                     @else
-                        <td class="display-6 text-right">Rp. {{ number_format($data->pesananPenjualan->barang->harga_reseller) }}</td>
+                        <td class="display-6 text-right">Rp. {{ number_format($item->barang->harga_reseller) }}</td>
                     @endif
                     
-                    <td class="display-6 text-center">{{ $data->pesananPenjualan->diskon }}</td>
-                    <td class="display-6 text-right">Rp. {{ number_format($data->pesananPenjualan->total_harga) }}</td>
+                    <td class="display-6 text-center">{{ $data->pesananPenjualan->diskon ? $data->pesananPenjualan->diskon : '-' }}</td>
+                    <td class="display-6 text-right">Rp. {{ number_format($item->total_harga) }}</td>
                 </tr>
-            @endif
+            @endforeach     
         </tbody>
     </table>
 

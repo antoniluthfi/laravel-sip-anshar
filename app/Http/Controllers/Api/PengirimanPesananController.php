@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Ekspedisi;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\PengirimanPesanan;
@@ -70,6 +71,11 @@ class PengirimanPesananController extends Controller
         $pengirimanPesanan = PengirimanPesanan::where('kode_pesanan', $id)->first();
         $input = $request->all();
         unset($input['total_harga']);
+        
+        $ekspedisi = Ekspedisi::where('nama_ekspedisi', $request->ekspedisi)->first();
+        $input['id_ekspedisi'] = $ekspedisi->id;
+        unset($input['ekspedisi']);
+
         $pengirimanPesanan->fill($input)->save();
         
         $pesananPenjualan = PesananPenjualan::where('kode_pesanan', $id)->first();
