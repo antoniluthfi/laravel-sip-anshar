@@ -82,12 +82,6 @@
     </div>
 
     <div class="float-right" style="width: 30%">
-        <p class="lead-2 text-center">Gudang</p>
-        <hr class=" mt-6" style="width: 80%">
-        <p class="lead-2 mt-0 text-center">{{ ucwords($data->user->name) }}</p>    
-    </div>
-
-    <div class="float-right" style="width: 30%">
         <p class="lead-2 text-center">Penerima</p>
         <hr class=" mt-6" style="width: 80%">
         <p class="lead-2 mt-0 text-center">{{ ucwords($data->user->name) }}</p>    
