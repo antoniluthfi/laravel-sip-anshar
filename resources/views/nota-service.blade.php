@@ -22,6 +22,16 @@ if(strpos($data->penerimaan->teknisi, ',')) {
 date_default_timezone_set('Asia/Jakarta');
 $now = date("d m Y");
 
+if(strpos(strtolower($data->penerimaan->cabang->nama_cabang), 'twincom') !== false) {
+    $keyword = 'Twincom ';
+    $cabang = 'Twincom Service Center ';
+} else if(strpos(strtolower($data->penerimaan->cabang->nama_cabang), 'pandacom') !== false) {
+    $keyword = 'Pandacom ';
+    $cabang = 'Pandacom Service Center ';
+}
+
+$cabang .= explode($keyword, $data->penerimaan->cabang->nama_cabang)[1];
+
 @endphp
 
 <!DOCTYPE html>
@@ -37,7 +47,7 @@ $now = date("d m Y");
             <img src="https://drive.google.com/thumbnail?id=12ubasd0uZrQ3LFlQ3Hw1mG4Q8ORLZ3Ao" width="80" height="80" alt="" class="mr-2">
         </div>
         <div class="float-left ml-1" style="width: 62%;">        
-            <h1 class="display-5 mt-0 mb-0 p-0" style="font-weight: bold; letter-spacing: 1.5px;">TWINCOM SERVICE CENTER {{ strtoupper($data->penerimaan->cabang->nama_cabang) }}</h1>
+            <h1 class="display-5 mt-0 mb-0 p-0" style="font-weight: bold; letter-spacing: 1.5px;">{{ strtoupper($cabang) }}</h1>
             <h1 class="display-6 mt-0 mb-0 p-0" style="font-weight: bold; letter-spacing: 1.5px;">KOMPUTER - LAPTOP - PRINTER - REFILL TONER - CCTV</h1>
 
             <p class="lead mt-0 mb-0 p-0">Banjarbaru : Jl. Panglima Batur Timur RT. 02 RW. 01 Ruko No. 6, Telp. 085245114690, 08115138800, 05116749897</p>
@@ -58,14 +68,14 @@ $now = date("d m Y");
             </div>
 
             <div class="clearfix">
-                <div class="float-left" style="width: 43%">
+                <div class="float-left" style="width: 50%">
                     <p class="lead ml-2 mt-1 mb-0" style="font-weight: bold; letter-spacing: 1.5px;">Nomor Service</p>
                     <p class="lead ml-2 mt-0 mb-0" style="font-weight: bold; letter-spacing: 1.5px;">Kode Pelanggan</p>
                     <p class="lead ml-2 mt-0 mb-0" style="font-weight: bold; letter-spacing: 1.5px;">Nama Pelanggan</p>
                     <p class="lead ml-2 mt-0 mb-1" style="font-weight: bold; letter-spacing: 1.5px;">Telp/Hp</p>
                 </div>   
                 
-                <div class="float-right" style="width: 56%;">
+                <div class="float-right" style="width: 49%;">
                     <p class="lead mt-1 mb-0">: {{ $no_service }}</p>
                     <p class="lead mt-0 mb-0">: {{ $data->penerimaan->id_customer }}</p>
                     <p class="lead mt-0 mb-0">: {{ ucwords($data->penerimaan->customer->name) }}</p>
