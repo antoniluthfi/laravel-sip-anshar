@@ -16,7 +16,7 @@ class PesananPenjualan extends Model
 
     public function pelanggan()
     {
-        return $this->hasOne(User::class, 'id', 'user_id')->select('id', 'name', 'email', 'hak_akses');
+        return $this->hasOne(User::class, 'id', 'user_id');
     }
 
     public function penjual()
