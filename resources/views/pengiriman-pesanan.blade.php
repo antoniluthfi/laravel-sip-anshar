@@ -58,7 +58,7 @@
         <tbody>
             @foreach ($data->pesananPenjualan->detailPesananPenjualan as $item)
                 <tr>
-                    <td class="display-6 text-center">{{ $item->id }}</td>
+                    <td class="display-6 text-center">{{ $item->barang->id }}</td>
                     <td class="display-6 text-center">{{ $item->barang->nama_barang }}</td>
                     <td class="display-6 text-center">{{ $item->kuantitas }}</td>
 
