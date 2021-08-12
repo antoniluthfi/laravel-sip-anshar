@@ -38,6 +38,16 @@ class PenerimaanController extends Controller
         ]);
     }
 
+    public function getListNoService()
+    {
+        $penerimaan = Penerimaan::select('no_service AS kode')->get();
+        return response()->json([
+            'status' => 'OK',
+            'errors' => null,
+            'result' => $penerimaan
+        ], 200);
+    }
+
     public function create(Request $request)
     {
         date_default_timezone_set("Asia/Jakarta");

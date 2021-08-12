@@ -29,6 +29,16 @@ class PengembalianController extends Controller
         ], 200);
     }
 
+    public function getListNoService()
+    {
+        $pengembalian = Pengembalian::select('no_service AS kode')->get();
+        return response()->json([
+            'status' => 'OK',
+            'errors' => null,
+            'result' => $pengembalian
+        ], 200);
+    }
+
     public function create(Request $request)
     {
         $input = $request->all();

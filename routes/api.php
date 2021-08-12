@@ -85,6 +85,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('pesanan-penjualan', [PesananPenjualanController::class, 'index']);
     Route::get('pesanan-penjualan/{id}', [PesananPenjualanController::class, 'getDataById']);
     Route::get('pesanan-penjualan/user/{id}', [PesananPenjualanController::class, 'getDataByUserId']);
+    Route::get('pesanan-penjualan/list/kode-pesanan', [PesananPenjualanController::class, 'getListKodePesanan']);
     Route::post('pesanan-penjualan', [PesananPenjualanController::class, 'create']);
     Route::put('pesanan-penjualan/{id}', [PesananPenjualanController::class, 'update']);
     Route::delete('pesanan-penjualan/{id}', [PesananPenjualanController::class, 'delete']);
@@ -92,6 +93,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('pengiriman-pesanan', [PengirimanPesananController::class, 'index']);
     Route::get('pengiriman-pesanan/{id}', [PengirimanPesananController::class, 'getDataById']);
     Route::get('pengiriman-pesanan/marketing/{id_marketing}', [PengirimanPesananController::class, 'getDataByIdMarketing']);
+    Route::get('pengiriman-pesanan/list/kode-pengiriman', [PengirimanPesananController::class, 'getListKodePengiriman']);
     Route::post('pengiriman-pesanan', [PengirimanPesananController::class, 'create']);
     Route::put('pengiriman-pesanan/{id}', [PengirimanPesananController::class, 'update']);
     Route::delete('pengiriman-pesanan/kode-pesanan/{id}', [PengirimanPesananController::class, 'deletePesananPenjualan']);
@@ -118,6 +120,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('faktur-penjualan', [FakturPenjualanController::class, 'index']);
     Route::get('faktur-penjualan/{no_faktur}', [FakturPenjualanController::class, 'getDataById']);
     Route::get('faktur-penjualan/marketing/{marketing_id}', [FakturPenjualanController::class, 'getDataByMarketingId']);
+    Route::get('faktur-penjualan/list/no-faktur', [FakturPenjualanController::class, 'getListNoFaktur']);
     Route::get('faktur-penjualan/pemasukan/{kategori}/{marketing_id}', [FakturPenjualanController::class, 'getDataPemasukanByMarketingId']);
     Route::get('faktur-penjualan/pemasukan/per/kategori-barang/{marketing_id}', [FakturPenjualanController::class, 'getDataPemasukanByKategori']);
     Route::post('faktur-penjualan', [FakturPenjualanController::class, 'create']);
@@ -137,6 +140,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('penerimaan', [PenerimaanController::class, 'index']);
     Route::get('penerimaan/{no_service}', [PenerimaanController::class, 'getDataByNoService']);
     Route::get('penerimaan/user/{id}', [PenerimaanController::class, 'getDataByIdAdmin']);
+    Route::get('penerimaan/list/no-service', [PenerimaanController::class, 'getListNoService']);
     Route::post('penerimaan', [PenerimaanController::class, 'create']);
     Route::put('penerimaan/{no_service}', [PenerimaanController::class, 'update']);
     Route::delete('penerimaan/{no_service}', [PenerimaanController::class, 'delete']);
@@ -156,6 +160,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     Route::get('pengembalian', [PengembalianController::class, 'index']);
     Route::get('pengembalian/{no_pengembalian}', [PengembalianController::class, 'getDataByNoPengembalian']);
+    Route::get('pengembalian/list/no-service', [PengembalianController::class, 'getListNoService']);
     Route::post('pengembalian', [PengembalianController::class, 'create']);
     Route::put('pengembalian/{no_pengembalian}', [PengembalianController::class, 'update']);
     Route::put('pengembalian/reset/{no_pengembalian}', [PengembalianController::class, 'reset']);

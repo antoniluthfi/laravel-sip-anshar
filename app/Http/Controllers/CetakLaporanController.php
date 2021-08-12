@@ -19,6 +19,7 @@ class CetakLaporanController extends Controller
 {
     public function cetakLaporan($tipeLaporan, $str = null)
     {
+        // dd($tipeLaporan);
         if($tipeLaporan === 'stok-barang') {
             $data = StokBarang::with('detailStokBarang')->get();
             $array = ['data' => $data];
@@ -35,7 +36,7 @@ class CetakLaporanController extends Controller
                 'data' => $data,
                 'role' => $str
             ];
-        } elseif($tipeLaporan === 'data-pelanggan-2') {
+        } elseif($tipeLaporan === 'data-pelanggan2') {
             $data = User::where('hak_akses', 'reseller')
                         ->orWhere('hak_akses', 'user')
                         ->get();

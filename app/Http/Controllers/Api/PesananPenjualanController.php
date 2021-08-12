@@ -56,6 +56,16 @@ class PesananPenjualanController extends Controller
         ], 200);
     }
 
+    public function getListKodePesanan()
+    {
+        $pesananPenjualan = PesananPenjualan::select('kode_pesanan AS kode')->get();
+        return response()->json([
+            'status' => 'OK',
+            'errors' => null,
+            'result' => $pesananPenjualan
+        ], 200);
+    }
+
     public function create(Request $request)
     {
         // otentikasi user

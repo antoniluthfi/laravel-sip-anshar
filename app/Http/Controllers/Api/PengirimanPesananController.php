@@ -45,6 +45,16 @@ class PengirimanPesananController extends Controller
         ], 200);
     }
 
+    public function getListKodePengiriman()
+    {
+        $pengirimanPesanan = PengirimanPesanan::select('kode_pengiriman AS kode')->get();
+        return response()->json([
+            'status' => 'OK',
+            'errors' => null,
+            'result' => $pengirimanPesanan
+        ], 200);
+    }
+
     public function create(Request $request)
     {
         $kode_pengiriman = IdGenerator::generate([

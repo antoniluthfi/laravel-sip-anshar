@@ -54,8 +54,9 @@ class FakturPenjualanController extends Controller
             if($kategori === 'harian') {
                 $fakturPenjualan = DB::select("SELECT SUM(nominal) AS pemasukan, DATE_FORMAT(Created_At,'%Y-%m-%d') AS day FROM `faktur_penjualan` GROUP BY day, id_marketing HAVING day = curdate() AND id_marketing = '$marketing_id'");
             } elseif($kategori === 'bulanan') {
-                // $fakturPenjualan = DB::select("SELECT SUM(nominal) AS pemasukan, DATE_FORMAT(Created_At,'%Y-%m') AS month FROM `faktur_penjualan` GROUP BY month, id_marketing HAVING id_marketing = '$marketing_id' ORDER BY month DESC LIMIT 1");
-                $fakturPenjualan = FakturPenjualan::whereMonth('created_at', date('m'))->where('id_marketing', $marketing_id)->sum('nominal');
+                $fakturPenjualan = FakturPenjualan::where('id_marketing', $marketing_id)
+                                                ->whereMonth('created_at', date('m'))
+                                                ->sum('nominal');
             }
         }
 
@@ -88,6 +89,16 @@ class FakturPenjualanController extends Controller
                             ->get();
         }
 
+        return response()->json([
+            'status' => 'OK',
+            'errors' => null,
+            'result' => $fakturPenjualan
+        ], 200);
+    }
+
+    public function getListNoFaktur()
+    {
+        $fakturPenjualan = FakturPenjualan::select('no_faktur AS kode')->get();
         return response()->json([
             'status' => 'OK',
             'errors' => null,
