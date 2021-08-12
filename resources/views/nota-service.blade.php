@@ -190,12 +190,12 @@ $cabang .= explode($keyword, $data->penerimaan->cabang->nama_cabang)[1];
 
                 <div class="float-left" style="width: 32%">
                     <p class="lead text-center mt-0 mb-5">Diterima</p>
-                    <p class="lead text-center mt-0 mb-1">{{ $data->penerimaan->customer->name }}</p>
+                    <p class="lead text-center mt-0 mb-1">{{ ucwords($data->penerimaan->customer->name) }}</p>
                 </div>
 
                 <div class="float-left" style="width: 32%">
                     <p class="lead text-center mt-0 mb-5">Administrasi</p>
-                    <p class="lead text-center mt-0 mb-1">{{ $data->penerimaan->admin->name }}</p>
+                    <p class="lead text-center mt-0 mb-1">{{ ucwords($data->penerimaan->admin->name) }}</p>
                 </div>
             </div>
         </div>

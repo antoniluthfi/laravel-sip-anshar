@@ -89,7 +89,7 @@ $cabang .= explode($keyword, $data->cabang->nama_cabang)[1];
     <div class="border mt-1" style="width: 100%; height: 173px;">
         <h1 class="display-6 text-center mt-1 mb-1" style="font-weight: bold; letter-spacing: 1.5px;">INFORMASI PENERIMAAN BARANG</h1>
 
-        <div class="float-left" style="width: 15%;">
+        <div class="float-left" style="width: 19%;">
             <p class="lead ml-2 mt-0 mb-0" style="font-weight: bold; letter-spacing: 1.5px;">Tgl Penerimaan</p>
 
             @if ($data->jenis_penerimaan === 'Jasa Lain-lain')
@@ -126,7 +126,7 @@ $cabang .= explode($keyword, $data->cabang->nama_cabang)[1];
             <p class="lead ml-2 mt-0 mb-0" style="font-weight: bold; letter-spacing: 1.5px;">Estimasi Penyelesaian</p>
         </div>
 
-        <div class="float-right" style="width: 85%;">
+        <div class="float-right" style="width: 81%;">
             <p class="lead ml-2 mt-0 mb-0">: {{ $tanggal }}</p>
 
             @if ($data->jenis_penerimaan === 'Jasa Lain-lain')
@@ -195,7 +195,7 @@ $cabang .= explode($keyword, $data->cabang->nama_cabang)[1];
             
             <div class="float-left" style="width: 32%">
                 <p class="lead text-center mt-0 mb-5">Teknisi PJ</p>
-                <p class="lead text-center mt-0 mb-1">{{ $data->teknisiPj[0]->teknisi->name }}</p>
+                <p class="lead text-center mt-0 mb-1">{{ ucwords($data->teknisiPj[0]->teknisi->name) }}</p>
             </div>
         </div>
     </div>
