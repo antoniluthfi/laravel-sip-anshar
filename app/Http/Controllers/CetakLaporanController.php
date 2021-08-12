@@ -209,7 +209,10 @@ class CetakLaporanController extends Controller
 
     public function notaService($no_pengembalian)
     {
-        $data = Pengembalian::with('penerimaan', 'arusKas')->where('no_pengembalian', $no_pengembalian)->first();
+        $data = Pengembalian::with('penerimaan', 'arusKas')
+                            ->where('no_pengembalian', $no_pengembalian)
+                            ->orWhere('no_service', $no_pengembalian)
+                            ->first();
         // dd($data->penerimaan);
         $this->pdfGeneratorNota('nota-service', 'Nota Service', 'nota-service', $data);
     }
