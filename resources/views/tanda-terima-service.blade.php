@@ -1,4 +1,5 @@
 @php
+error_reporting(0);
 
 $no_service = $data->no_service;
 

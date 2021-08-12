@@ -1,4 +1,6 @@
 @php
+error_reporting(0);
+
 if($data->admin->cab_penempatan === 'Banjarbaru') {
     $no_surat_jalan = 'SJ.BJB.' . $data->no_surat_jalan;
 } elseif($data->admin->cab_penempatan === 'Landasan Ulin') {
