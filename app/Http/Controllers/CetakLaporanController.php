@@ -22,7 +22,10 @@ class CetakLaporanController extends Controller
         // dd($tipeLaporan);
         if($tipeLaporan === 'stok-barang') {
             $data = StokBarang::with('detailStokBarang')->get();
-            $array = ['data' => $data];
+            $array = [
+                'data' => $data,
+                'total' => $data->count()
+            ];
         } elseif($tipeLaporan === 'data-pelanggan') {
             if($str === 'reseller') {
                 $data = User::where('hak_akses', 'reseller')->get();
@@ -34,7 +37,8 @@ class CetakLaporanController extends Controller
 
             $array = [
                 'data' => $data,
-                'role' => $str
+                'role' => $str,
+                'total' => $data->count()
             ];
         } elseif($tipeLaporan === 'data-pelanggan2') {
             $data = User::where('hak_akses', 'reseller')
@@ -43,6 +47,7 @@ class CetakLaporanController extends Controller
             // dd($data);
             $array = [
                 'data' => $data,
+                'total' => $data->count()
             ];
         } elseif($tipeLaporan === 'pesanan-penjualan') {
             $data = PesananPenjualan::with('detailPesananPenjualan', 'pelanggan', 'penjual', 'pengirimanPesanan', 'fakturPenjualan', 'syaratPembayaran', 'cabang')->where('kode_pesanan', $str)->first();
@@ -128,9 +133,6 @@ class CetakLaporanController extends Controller
 
     public function pdfReportGenerator($nama_pdf, $title, $file, $data, $tambahan)
     {
-        if($tambahan['sampai'] === 'x') {
-            $sampai = '';
-        }
         $pdf = PDF::loadView($file, ['data' => $data, 'dari' => $tambahan['dari'], 'sampai' => $tambahan['sampai'], 'nama_admin' => $tambahan['nama_admin'], 'dataCount' => $tambahan['dataCount']], [], [
             'mode'                 => '',
             'format'               => 'A4',
@@ -217,14 +219,8 @@ class CetakLaporanController extends Controller
         $this->pdfGeneratorNota('nota-service', 'Nota Service', 'nota-service', $data);
     }
 
-    public function laporanPengembalian($dari, $sampai, $cabang, $shift, $admin)
-    {
-        $data2 = [
-            'nama_admin' => $admin,
-            'dari' => $dari,
-            'sampai' => $sampai,
-            'dataCount' => ''
-        ];
+    public function laporanPenerimaan($dari, $sampai, $cabang, $admin) {
+        $data_admin = User::findOrFail($admin);
 
         if($sampai === 'x') {
             $sampai = "$dari 23:59:59";
@@ -233,19 +229,70 @@ class CetakLaporanController extends Controller
             $sampai = "$sampai 23:59:59";
         }
 
-        $data = ArusKas::with('penerimaan', 'pengerjaan', 'admin', 'detailPengerjaan', 'pj')
-                        ->whereBetween('created_at', [$dari, $sampai])
-                        ->where('no_service', '>', '0')
-                        ->where('cabang', $cabang);
-        if($shift != 'x') {
-            $data = $data->where('shift', $shift);
+        if($sampai === 'x') {
+            $data = Penerimaan::with('admin', 'customer', 'cabang', 'barangJasa')
+                            ->where('created_at', $dari)
+                            ->where('id_cabang', $cabang)
+                            ->where('id_admin', $admin)
+                            ->get();
+        } else {
+            $data = Penerimaan::with('admin', 'customer', 'cabang', 'barangJasa')
+                            ->whereBetween('created_at', [$dari, $sampai])
+                            ->where('id_cabang', $cabang)
+                            ->where('id_admin', $admin)
+                            ->get();
         }
-                            
-        $data = $data->get();
-        $this->pdfReportGenerator('laporan.pdf', 'Laporan Pengambalian Dan Pembayaran Barang Service', 'laporan-pengembalian', $data, $data2);
+
+        $data2 = [
+            'nama_admin' => $data_admin->name,
+            'dari' => $dari,
+            'sampai' => $sampai,
+            'dataCount' => $data->count()
+        ];
+        // dd($data);
+
+        $this->pdfReportGenerator('laporan_penerimaan_barang.pdf', 'Laporan Penerimaan Barang', 'laporan-penerimaan', $data, $data2);
     }
 
-    public function laporanArusKas($dari, $sampai, $cabang, $shift, $admin)
+    public function laporanPengembalian($dari, $sampai, $cabang, $admin) {
+        $data_admin = User::findOrFail($admin);
+
+        if($sampai === 'x') {
+            $sampai = "$dari 23:59:59";
+            $dari = "$dari 00:00:00";
+        } else {
+            $sampai = "$sampai 23:59:59";
+        }
+
+        if($sampai === 'x') {
+            $pengembalian = Pengembalian::with('penerimaan', 'arusKas')
+                            ->where('created_at', $dari)
+                            ->get();
+        } else {
+            $pengembalian = Pengembalian::with('penerimaan', 'arusKas')
+                            ->whereBetween('created_at', [$dari, $sampai])
+                            ->get();
+        }
+
+        $data = [];
+        foreach($pengembalian as $key => $val) {
+            if($val->penerimaan->id_cabang == $cabang) {
+                $data[$key] = $val;
+            }
+        }
+
+        $data2 = [
+            'nama_admin' => $data_admin->name,
+            'dari' => $dari,
+            'sampai' => $sampai,
+            'dataCount' => count($data)
+        ];
+        // dd($data);
+
+        $this->pdfReportGenerator('laporan_pengembalian_barang.pdf', 'Laporan Pengembalian Barang', 'laporan-pengembalian', $data, $data2);
+    }
+
+    public function laporanArusKas($dari, $sampai, $cabang, $admin)
     {
         if($sampai === 'x') {
             $sampai = "$dari 23:59:59";
@@ -278,13 +325,120 @@ class CetakLaporanController extends Controller
         $data = ArusKas::with('pengembalian')
                         ->whereBetween('created_at', [$dari, $sampai])
                         ->where('id_cabang', $cabang);
-        if($shift != 'x') {
-            $data = $data->where('shift', $shift);
-        }
 
         $data = $data->get();
         // dd($data[0]);
         $this->pdfReportGenerator('laporan_arus_kas.pdf', 'Laporan Arus Kas', 'laporan-arus-kas', $data, $data2);
+    }
+
+    public function laporanFakturPenjualan($dari, $sampai, $cabang, $marketing) {
+        $data_marketing = User::findOrFail($marketing);
+
+        if($sampai === 'x') {
+            $sampai = "$dari 23:59:59";
+            $dari = "$dari 00:00:00";
+        } else {
+            $sampai = "$sampai 23:59:59";
+        }
+
+        if($sampai === 'x') {
+            $fakturPenjualan = FakturPenjualan::with('pesananPenjualan', 'marketing', 'user', 'bank')
+                            ->where('created_at', $dari)
+                            ->where('id_marketing', $marketing)
+                            ->get();
+        } else {
+            $fakturPenjualan = FakturPenjualan::with('pesananPenjualan', 'marketing', 'user', 'bank')
+                            ->whereBetween('created_at', [$dari, $sampai])
+                            ->where('id_marketing', $marketing)
+                            ->get();
+        }
+
+        $data = [];
+        foreach($fakturPenjualan as $key => $faktur) {
+            if($faktur->pesananPenjualan->id_cabang == $cabang) {
+                $data[$key] = $faktur;
+            }
+        }
+
+        $data2 = [
+            'nama_admin' => $data_marketing->name,
+            'dari' => $dari,
+            'sampai' => $sampai,
+            'dataCount' => count($data)
+        ];
+        // dd($data);
+
+        $this->pdfReportGenerator('laporan_faktur_penjualan.pdf', 'Laporan Faktur Penjualan', 'laporan-faktur-penjualan', $data, $data2);
+    }
+
+    public function laporanPengirimanPesanan($dari, $sampai, $cabang, $marketing) {
+        $data_marketing = User::findOrFail($marketing);
+
+        if($sampai === 'x') {
+            $sampai = "$dari 23:59:59";
+            $dari = "$dari 00:00:00";
+        } else {
+            $sampai = "$sampai 23:59:59";
+        }
+
+        if($sampai === 'x') {
+            $data = PengirimanPesanan::with('user', 'ekspedisi', 'cabang')
+                            ->where('created_at', $dari)
+                            ->where('id_cabang', $cabang)
+                            ->where('id_marketing', $marketing)
+                            ->get();
+        } else {
+            $data = PengirimanPesanan::with('user', 'ekspedisi', 'cabang')
+                            ->whereBetween('created_at', [$dari, $sampai])
+                            ->where('id_cabang', $cabang)
+                            ->where('id_marketing', $marketing)
+                            ->get();
+        }
+
+        $data2 = [
+            'nama_admin' => $data_marketing->name,
+            'dari' => $dari,
+            'sampai' => $sampai,
+            'dataCount' => count($data)
+        ];
+        // dd($data);
+
+        $this->pdfReportGenerator('laporan_pengiriman_pesanan.pdf', 'Laporan Pengiriman Pesanan', 'laporan-pengiriman-pesanan', $data, $data2);
+    }
+
+    public function laporanPesananPenjualan($dari, $sampai, $cabang, $marketing) {
+        $data_marketing = User::findOrFail($marketing);
+
+        if($sampai === 'x') {
+            $sampai = "$dari 23:59:59";
+            $dari = "$dari 00:00:00";
+        } else {
+            $sampai = "$sampai 23:59:59";
+        }
+
+        if($sampai === 'x') {
+            $data = PesananPenjualan::with('pelanggan', 'penjual', 'syaratPembayaran', 'cabang')
+                            ->where('created_at', $dari)
+                            ->where('id_cabang', $cabang)
+                            ->where('id_penjual', $marketing)
+                            ->get();
+        } else {
+            $data = PesananPenjualan::with('pelanggan', 'penjual', 'syaratPembayaran', 'cabang')
+                            ->whereBetween('created_at', [$dari, $sampai])
+                            ->where('id_cabang', $cabang)
+                            ->where('id_penjual', $marketing)
+                            ->get();
+        }
+
+        $data2 = [
+            'nama_admin' => $data_marketing->name,
+            'dari' => $dari,
+            'sampai' => $sampai,
+            'dataCount' => count($data)
+        ];
+        // dd($data);
+
+        $this->pdfReportGenerator('laporan_pesanan_penjualan.pdf', 'Laporan Pesanan Penjualan', 'laporan-pesanan-penjualan', $data, $data2);
     }
 
     public function suratJalan($no_surat_jalan)

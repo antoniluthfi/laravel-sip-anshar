@@ -26,6 +26,10 @@ Route::get('/laporan/transaksi/{tipeLaporan}/id/{id}', [CetakLaporanController::
 
 Route::get('tanda-terima-service/{no_service}', [CetakLaporanController::class, 'tandaTerimaService']);
 Route::get('nota-service/{no_pengembalian}', [CetakLaporanController::class, 'notaService']);
-Route::get('laporan-pengembalian-barang/{dari}/{sampai}/{cabang}/{shift}/{admin}', [CetakLaporanController::class, 'laporanPengembalian']);
-Route::get('laporan-arus-kas/{dari}/{sampai}/{cabang}/{shift}/{admin}', [CetakLaporanController::class, 'laporanArusKas']);
+Route::get('laporan-pengembalian/{dari}/{sampai}/{cabang}/{admin}', [CetakLaporanController::class, 'laporanPengembalian']);
+Route::get('laporan-arus-kas/{dari}/{sampai}/{cabang}/{admin}', [CetakLaporanController::class, 'laporanArusKas']);
+Route::get('laporan-penerimaan/{dari}/{sampai}/{cabang}/{admin}', [CetakLaporanController::class, 'laporanPenerimaan']);
+Route::get('laporan-faktur-penjualan/{dari}/{sampai}/{cabang}/{marketing}', [CetakLaporanController::class, 'laporanFakturPenjualan']);
+Route::get('laporan-pengiriman-pesanan/{dari}/{sampai}/{cabang}/{marketing}', [CetakLaporanController::class, 'laporanPengirimanPesanan']);
+Route::get('laporan-pesanan-penjualan/{dari}/{sampai}/{cabang}/{marketing}', [CetakLaporanController::class, 'laporanPesananPenjualan']);
 Route::get('surat-jalan/{no_surat_jalan}', [CetakLaporanController::class, 'suratJalan']);

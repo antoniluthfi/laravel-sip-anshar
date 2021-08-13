@@ -29,14 +29,25 @@
     </nav><br> 
 
     <h3 class="display-5">Laporan Data Pelanggan</h3>
+    <div class="container mb-4">
+        <div class="row">
+            <div class="float-left" style="width: 30%;">  
+                <p class="lead-2 ml-1 mt-0 mb-0 p-0">Total Pelanggan</p>
+            </div>
+            <div class="float-right" style="width: 69%;">
+                <p class="lead-2 ml-1 mt-0 mb-0 p-0">: {{ $total }}</p>
+            </div>
+        </div>
+    </div>
+
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th class="display-6">No</th>
-                <th class="display-6">Nama</th>
-                <th class="display-6">Email</th>
-                <th class="display-6">Nomor HP</th>
-                <th class="display-6">Alamat</th>
+                <th class="display-6"><strong>#</strong></th>
+                <th class="display-6"><strong>Nama</strong></th>
+                <th class="display-6"><strong>Email</strong></th>
+                <th class="display-6"><strong>Nomor HP</strong></th>
+                <th class="display-6"><strong>Alamat</strong></th>
             </tr>
         </thead>
         <tbody>

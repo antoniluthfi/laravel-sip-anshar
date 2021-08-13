@@ -2,21 +2,17 @@
 error_reporting(0);
 
 date_default_timezone_set('Asia/Jakarta');
-$now = date("d m Y");    
+$now = date("d M Y");    
 
-$total = 0;
-for ($i = 0; $i < count($data); $i++) {
-    $total += intval($data[$i]->nominal);
-}
+$dari = strtotime($dari);
+$dari = date("d M Y", $dari);
 
-$dari = explode('-', $dari);
-$dari = $dari[2] . '-' . $dari[1] . '-' . $dari[0];
+$sampai = strtotime($sampai);
+$sampai = date("d M Y", $sampai);
 
-if($sampai == 'x') {
-    $sampai = '';
-} else {
-    $sampai = explode('-', $sampai);
-    $sampai = ' - ' . $sampai[2] . '-' . $sampai[1] . '-' . $sampai[0];
+$total_biaya = 0;
+foreach($data as $val) {
+    $total_biaya += (int) $val->arusKas->total_biaya;
 }
 
 @endphp
@@ -24,7 +20,7 @@ if($sampai == 'x') {
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Laporan Pengembalian Dan Pembayaran Service</title>
+        <title>Laporan Pengembalian Barang</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://tsc-api.twincom.co.id/public/css/app.css">
@@ -38,7 +34,7 @@ if($sampai == 'x') {
                         <img src="https://drive.google.com/thumbnail?id=12ubasd0uZrQ3LFlQ3Hw1mG4Q8ORLZ3Ao" width="80" height="80" alt="" class="mr-2">
                     </div>
                     <div class="float-right" style="width: 90%;">        
-                        <h1 class="display-4 mt-0 mb-0 p-0">TWINCOM SERVICE CENTER {{ strtoupper($data[0]->cabang) }}</h1>
+                        <h1 class="display-4 mt-0 mb-0 p-0">CV. TWINCOM GROUP</h1>
                         <p class="lead mt-0 mb-0 p-0">Banjarbaru : Jl. Panglima Batur Timur RT. 02 RW. 01 Ruko No. 6, Telp. 085245114690, 08115138800, 05116749897</p>
                         <p class="lead mt-0 mb-0 p-0">Landasan Ulin : Kp. Baru RT. 3 RW. 02 Jl. Seroja No. 11 Landasan Ulin Banjarbaru, Telp. 082255558174, 087815836366, 08115166995</p>
                         <p class="lead mt-0 mb-0 p-0">Banjarmasin : Jl. Adyaksa No. 4 (Deretan UNISKA) Kayutangi Banjarmasin, Telp. 082255558175, 08781664873, 085100159003</p>
@@ -47,7 +43,7 @@ if($sampai == 'x') {
             </div>            
         </nav>  
         
-        <h1 class="display-5 ml-1 mt-4 mb-2 p-0">LAPORAN PEMBAYARAN DAN PENGEMBALIAN SERVICE</h1>
+        <h1 class="display-5 ml-1 mt-4 mb-2 p-0">LAPORAN PENGEMBALIAN BARANG</h1>
         <div class="container mb-4">
             <div class="row">
                 <div class="float-left" style="width: 30%;">  
@@ -55,64 +51,77 @@ if($sampai == 'x') {
                     <p class="lead-2 ml-1 mt-0 mb-0 p-0">Total Biaya Service</p>
                 </div>
                 <div class="float-right" style="width: 69%;">
-                    <p class="lead-2 ml-1 mt-0 mb-0 p-0">: {{ $dari . $sampai }}</p>
-                    <p class="lead-2 text-success ml-1 mt-0 mb-0 p-0">: Rp. {{ number_format($total) }}</p>
+                    <p class="lead-2 ml-1 mt-0 mb-0 p-0">: {{ $dari === $sampai ? $dari : $dari . ' - ' . $sampai }}</p>
+                    <p class="lead-2 text-success ml-1 mt-0 mb-0 p-0">: Rp. {{ number_format($total_biaya) }}</p>
                 </div>
             </div>
-        </div>            
+        </div>
 
         <table class="table table-bordered">
             <thead>
                 <tr class="table-dark">
-                    <th scope="col">#</th>
-                    <th scope="col">No Nota</th>
-                    <th scope="col">Customer</th>
-                    <th scope="col">Barang/Jasa</th>
-                    <th scope="col">Solusi</th>
-                    <th scope="col">Tgl Terima</th>
-                    <th scope="col">Tgl Selesai</th>
-                    <th scope="col">Tgl Kembali</th>
-                    <th scope="col">Teknisi</th>
-                    <th scope="col">Diserahkan</th>
-                    <th scope="col">Nominal</th>
-                    <th scope="col">Status Kembali</th>
+                    <th scope="col"><strong>#</strong></th>
+                    <th scope="col"><strong>No Nota</strong></th>
+                    <th scope="col"><strong>Pelanggan</strong></th>
+                    <th scope="col"><strong>Barang/Jasa</strong></th>
+                    <th scope="col"><strong>Tgl Terima</strong></th>
+                    <th scope="col"><strong>Tgl Selesai</strong></th>
+                    <th scope="col"><strong>Tgl Kembali</strong></th>
+                    <th scope="col"><strong>Diserahkan</strong></th>
+                    <th scope="col"><strong>Nominal</strong></th>
+                    <th scope="col"><strong>Status</strong></th>
+
+                    @if ($dari !== $sampai)
+                        <th scope="col"><strong>Tanggal Dibuat</strong></th>
+                    @endif
                 </tr>
             </thead>
             <tbody>
-                @for ($i = 0; $i < count($data); $i++)
+                @forelse ($data as $i => $item)
                     @php
-                        $no_service = $data[$i]->no_service;
+                        $no_service = $item->no_service;
 
-                        if($data[$i]->pengerjaan->status_pengerjaan == 3) {
-                            $status = 'Selesai';
-                        } elseif($data[$i]->pengerjaan->status_pengerjaan == 2) {
-                            $status = 'Sedang Dikerjakan';
-                        } elseif($data[$i]->pengerjaan->status_pengerjaan == 1) {
-                            $status = 'Cancel';
-                        } elseif($data[$i]->pengerjaan->status_pengerjaan == 0) {
-                            $status = 'Belum Dikerjakan';
-                        }          
+                        if($item->status_pengembalian == 1) {
+                            $status = 'Dikembalikan';
+                        } elseif($item->status_pengembalian == 0) {
+                            $status = 'Belum dikembalikan';
+                        }   
+                        
+                        $tgl_terima = strtotime($item->penerimaan->created_at);
+                        $tgl_terima = date("d M Y", $tgl_terima);
+
+                        $tgl_selesai = strtotime($item->penerimaan->pengerjaan->waktu_selesai);
+                        $tgl_selesai = date("d M Y", $tgl_selesai);
+
+                        $tgl_kembali = strtotime($item->created_at);
+                        $tgl_kembali = date("d M Y", $tgl_kembali);
                     @endphp
                     <tr class="' . $table_color . '">
                         <th scope="row"><p class="lead-2">{{ $i + 1 }}</p></th>
                         <td><p class="lead-2">{{ $no_service }}</p></td>
-                        <td><p class="lead-2">{{ ucwords($data[$i]->penerimaan->customer->nama) . ' - ' . $data[$i]->penerimaan->customer->nomorhp }}</p></td>
-                        <td><p class="lead-2">{{ $data[$i]->penerimaan->bj->nama_bj . ' ' . $data[$i]->penerimaan->merek . ' ' . $data[$i]->penerimaan->tipe }}</p></td>
-                        <td><p class="lead-2">{{ $data[$i]->detailPengerjaan->pengerjaan }}</p></td>
-                        <td><p class="lead-2">{{ $data[$i]->penerimaan->created_at }}</p></td>
-                        <td><p class="lead-2">{{ $data[$i]->detailPengerjaan->waktu_selesai }}</p></td>
-                        <td><p class="lead-2">{{ $data[$i]->created_at }}</p></td>
-                        <td><p class="lead-2">{{ ucwords($data[$i]->pj->teknisi->name) }}</p></td>
+                        <td><p class="lead-2">{{ ucwords($item->penerimaan->customer->name) . ' - ' . $item->penerimaan->customer->nomorhp }}</p></td>
+                        <td><p class="lead-2">{{ $item->penerimaan->barangJasa->nama . ' ' . $item->penerimaan->barang->nama }}</p></td>
+                        <td><p class="lead-2">{{ $tgl_terima }}</p></td>
+                        <td><p class="lead-2">{{ $tgl_selesai }}</p></td>
+                        <td><p class="lead-2">{{ $tgl_kembali }}</p></td>
                         <td><p class="lead-2">{{ ucwords($nama_admin) }}</p></td>
-                        <td><p class="lead-2">{{ number_format($data[$i]->nominal) }}</p></td>
+                        <td><p class="lead-2">{{ number_format($item->arusKas->total_biaya) }}</p></td>
                         <td><p class="lead-2">{{ $status }}</p></td>
+
+                        @if ($dari !== $sampai)
+                            <td class="lead-2">{{ date_format($item->created_at, "d M Y") }}</td>    
+                        @endif
                     </tr> 
-                @endfor
+                @empty
+                    <tr>
+                        <td colspan="{{ $dari !== $sampai ? '8' : '7' }}" class="text-center">Tidak ada data</td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
 
         <div class="float-right w-40">
-            <p class="lead-2 text-center">{{ ucwords($data[0]->cabang) . ', ' . $now }}</p>
+            <p class="lead-2 text-center">{{ ucwords($data[0]->penerimaan->cabang->nama_cabang) . ', ' . $now }}</p>
             <p class="lead-2 mt-6 text-center">{{ ucwords($nama_admin) }}</p>    
         </div>
 

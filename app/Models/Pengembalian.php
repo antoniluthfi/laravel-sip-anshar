@@ -15,7 +15,7 @@ class Pengembalian extends Model
 
     public function penerimaan()
     {
-        return $this->belongsTo(Penerimaan::class, 'no_service', 'no_service')->with('customer', 'barangJasa', 'pengerjaan');
+        return $this->belongsTo(Penerimaan::class, 'no_service', 'no_service')->with('customer', 'barangJasa', 'pengerjaan', 'barang');
     }
 
     public function arusKas()

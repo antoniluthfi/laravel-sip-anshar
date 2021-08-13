@@ -1,5 +1,12 @@
 @php
-    error_reporting(0); 
+error_reporting(0); 
+
+$dari = strtotime($dari);
+$dari = date("d M Y", $dari);
+
+$sampai = strtotime($sampai);
+$sampai = date("d M Y", $sampai);
+
 @endphp
 
 <!DOCTYPE html>
@@ -9,7 +16,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="{{ public_path('css/app.css') }}">
-    <title>Data Pelanggan</title>
+    <title>Laporan Penerimaan Barang</title>
 </head>
 <body>
     <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
@@ -28,14 +35,16 @@
         </div>            
     </nav><br> 
 
-    <h3 class="display-5">Laporan Data Pelanggan {{ ucwords($role) }}</h3>
+    <h3 class="display-5">Laporan Penerimaan Barang</h3>
     <div class="container mb-4">
         <div class="row">
             <div class="float-left" style="width: 30%;">  
-                <p class="lead-2 ml-1 mt-0 mb-0 p-0">Total Pelanggan</p>
+                <p class="lead-2 ml-1 mt-0 mb-0 p-0">Tanggal</p>
+                <p class="lead-2 ml-1 mt-0 mb-0 p-0">Admin</p>
             </div>
             <div class="float-right" style="width: 69%;">
-                <p class="lead-2 ml-1 mt-0 mb-0 p-0">: {{ $total }}</p>
+                <p class="lead-2 ml-1 mt-0 mb-0 p-0">: {{ $dari === $sampai ? $dari : $dari . ' - ' . $sampai }}</p>
+                <p class="lead-2 ml-1 mt-0 mb-0 p-0">: {{ ucwords($nama_admin) }}</p>
             </div>
         </div>
     </div>
@@ -44,30 +53,35 @@
         <thead>
             <tr>
                 <th class="display-6"><strong>#</strong></th>
-                <th class="display-6"><strong>Nama</strong></th>
-                <th class="display-6"><strong>Email</strong></th>
-                <th class="display-6"><strong>Nomor HP</strong></th>
-                <th class="display-6"><strong>Alamat</strong></th>
+                <th class="display-6"><strong>No Servis</strong></th>
                 <th class="display-6"><strong>Cabang</strong></th>
+                <th class="display-6"><strong>Pelanggan</strong></th>
+                <th class="display-6"><strong>Barang Jasa</strong></th>
+
+                @if ($dari !== $sampai)
+                    <th class="display-6"><strong>Tanggal Dibuat</strong></th>
+                @endif
             </tr>
         </thead>
         <tbody>
-            @php
-                $no = 1;
-            @endphp
-            @foreach ($data as $item)
+            @forelse ($data as $key => $item)
                 <tr>
-                    <td class="display-6">{{ $no }}</td>
-                    <td class="display-6">{{ ucwords($item->name) }}</td>
-                    <td class="display-6">{{ $item->email }}</td>
-                    <td class="display-6">{{ $item->nomorhp }}</td>
-                    <td class="display-6">{{ $item->alamat }}</td>
+                    <td class="display-6">{{ $key + 1 }}</td>
+                    <td class="display-6">{{ $item->no_service }}</td>
                     <td class="display-6">{{ $item->cabang->nama_cabang }}</td>
+                    <td class="display-6">{{ ucwords($item->customer->name) }}</td>
+                    <td class="display-6">{{ $item->barangJasa->nama }}</td>
+                    <td class="display-6">{{ date_format($item->created_at, "d M Y") }}</td>
+
+                    @if ($dari !== $sampai)
+                        <td class="display-6">{{ date_format($item->created_at, "d M Y") }}</td>    
+                    @endif
                 </tr>
-                @php
-                    $no++;
-                @endphp
-            @endforeach
+            @empty
+                <tr>
+                    <td colspan="{{ $dari !== $sampai ? '6' : '5' }}" class="text-center">Tidak ada data</td>
+                </tr>
+            @endforelse
         </tbody>
     </table>
 </body>

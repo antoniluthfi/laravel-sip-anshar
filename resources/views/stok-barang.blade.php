@@ -32,22 +32,24 @@ error_reporting(0);
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th class="display-6">No</th>
-                <th class="display-6">Nama Barang</th>
-                <th class="display-6">Kategori</th>
-                <th class="display-6">Harga User</th>
-                <th class="display-6">Harga Reseller</th>
-                <th class="display-6">Stok Tersedia</th>
-                <th class="display-6">Stok Dapat Dijual</th>
+                <th class="display-6"><strong>#</strong></th>
+                <th class="display-6"><strong>Nama Barang</strong></th>
+                <th class="display-6"><strong>Kategori</strong></th>
+                <th class="display-6"><strong>Harga User</strong></th>
+                <th class="display-6"><strong>Harga Reseller</strong></th>
+                <th class="display-6"><strong>Stok Tersedia</strong></th>
+                <th class="display-6"><strong>Stok Dapat Dijual</strong></th>
             </tr>
         </thead>
         <tbody>
-            @php
-                $no = 1;
-            @endphp
-            @foreach ($data as $item)
+            @forelse ($data as $key => $item)
+                @php
+                    $stok_tersedia = 0;
+                    $stok_dapat_dijual = 0;
+                @endphp
+
                 <tr>
-                    <td class="display-6">{{ $no }}</td>
+                    <td class="display-6">{{ $key + 1 }}</td>
                     <td class="display-6">{{ $item->nama_barang }}</td>
                     <td class="display-6">{{ $item->kategori->nama_kategori }}</td>
                     <td class="display-6 text-right">Rp. {{ number_format($item->harga_user) }}</td>
@@ -55,18 +57,31 @@ error_reporting(0);
                     <td class="display-6">
                         @foreach ($item->detailStokBarang as $detail)
                             <p>{{ $detail->cabang->singkatan }} : {{ $detail->stok_tersedia }}</p>
+                            
+                            @php
+                                $stok_tersedia += (int) $detail->stok_tersedia;
+                            @endphp
                         @endforeach
+
+                        <p><strong>Total : {{ $stok_tersedia }}</strong></p>
                     </td>
                     <td class="display-6">
                         @foreach ($item->detailStokBarang as $detail)
                             <p>{{ $detail->cabang->singkatan }} : {{ $detail->stok_dapat_dijual }}</p>
+
+                            @php
+                                $stok_dapat_dijual += (int) $detail->stok_dapat_dijual;
+                            @endphp
                         @endforeach
+
+                        <p><strong>Total : {{ $stok_dapat_dijual }}</strong></p>
                     </td>
                 </tr>
-                @php
-                    $no++;
-                @endphp
-            @endforeach
+            @empty
+                <tr>
+                    <td colspan="7" class="display-6 text-center">Tidak ada data</td>
+                </tr>
+            @endforelse
         </tbody>
     </table>
 </body>
