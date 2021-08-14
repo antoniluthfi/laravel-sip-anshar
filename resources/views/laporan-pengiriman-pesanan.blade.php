@@ -7,9 +7,9 @@ $dari = date("d M Y", $dari);
 $sampai = strtotime($sampai);
 $sampai = date("d M Y", $sampai);
 
-$total_harga = 0;
+$total_ongkir = 0;
 foreach($data as $val) {
-    $total_harga += (int) $val->total_harga;
+    $total_ongkir += (int) $val->ongkir;
 }
 @endphp
 
@@ -44,9 +44,13 @@ foreach($data as $val) {
         <div class="row">
             <div class="float-left" style="width: 30%;">  
                 <p class="lead-2 ml-1 mt-0 mb-0 p-0">Tanggal</p>
+                <p class="lead-2 ml-1 mt-0 mb-0 p-0">Total Pengiriman</p>
+                <p class="lead-2 ml-1 mt-0 mb-0 p-0">Total Ongkir</p>
             </div>
             <div class="float-right" style="width: 69%;">
                 <p class="lead-2 ml-1 mt-0 mb-0 p-0">: {{ $dari === $sampai ? $dari : $dari . ' - ' . $sampai }}</p>
+                <p class="lead-2 ml-1 mt-0 mb-0 p-0">: {{ $dataCount }}</p>
+                <p class="lead-2 ml-1 mt-0 mb-0 p-0">: Rp. {{ number_format($total_ongkir) }}</p>
             </div>
         </div>
     </div>
@@ -96,5 +100,11 @@ foreach($data as $val) {
             @endforelse
         </tbody>
     </table>
+
+    <div class="float-right w-40">
+        <p class="lead-2 text-center">Marketing</p>
+        <hr class=" mt-6" style="width: 80%">
+        <p class="lead-2 mt-0 text-center">{{ ucwords($nama_admin) }}</p>
+    </div>
 </body>
 </html>
