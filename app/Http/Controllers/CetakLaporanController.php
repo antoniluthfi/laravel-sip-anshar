@@ -331,7 +331,7 @@ class CetakLaporanController extends Controller
         $this->pdfReportGenerator('laporan_arus_kas.pdf', 'Laporan Arus Kas', 'laporan-arus-kas', $data, $data2);
     }
 
-    public function laporanFakturPenjualan($dari, $sampai, $cabang, $marketing) {
+    public function laporanFakturPenjualan($dari, $sampai, $marketing) {
         $data_marketing = User::findOrFail($marketing);
 
         if($sampai === 'x') {
@@ -342,36 +342,29 @@ class CetakLaporanController extends Controller
         }
 
         if($sampai === 'x') {
-            $fakturPenjualan = FakturPenjualan::with('pesananPenjualan', 'marketing', 'user', 'bank')
+            $data = FakturPenjualan::with('pesananPenjualan', 'marketing', 'user', 'bank')
                             ->where('created_at', $dari)
                             ->where('id_marketing', $marketing)
                             ->get();
         } else {
-            $fakturPenjualan = FakturPenjualan::with('pesananPenjualan', 'marketing', 'user', 'bank')
+            $data = FakturPenjualan::with('pesananPenjualan', 'marketing', 'user', 'bank')
                             ->whereBetween('created_at', [$dari, $sampai])
                             ->where('id_marketing', $marketing)
                             ->get();
-        }
-
-        $data = [];
-        foreach($fakturPenjualan as $key => $faktur) {
-            if($faktur->pesananPenjualan->id_cabang == $cabang) {
-                $data[$key] = $faktur;
-            }
         }
 
         $data2 = [
             'nama_admin' => $data_marketing->name,
             'dari' => $dari,
             'sampai' => $sampai,
-            'dataCount' => count($data)
+            'dataCount' => $data->count()
         ];
         // dd($data);
 
         $this->pdfReportGenerator('laporan_faktur_penjualan.pdf', 'Laporan Faktur Penjualan', 'laporan-faktur-penjualan', $data, $data2);
     }
 
-    public function laporanPengirimanPesanan($dari, $sampai, $cabang, $marketing) {
+    public function laporanPengirimanPesanan($dari, $sampai, $marketing) {
         $data_marketing = User::findOrFail($marketing);
 
         if($sampai === 'x') {
@@ -384,13 +377,11 @@ class CetakLaporanController extends Controller
         if($sampai === 'x') {
             $data = PengirimanPesanan::with('user', 'ekspedisi', 'cabang')
                             ->where('created_at', $dari)
-                            ->where('id_cabang', $cabang)
                             ->where('id_marketing', $marketing)
                             ->get();
         } else {
             $data = PengirimanPesanan::with('user', 'ekspedisi', 'cabang')
                             ->whereBetween('created_at', [$dari, $sampai])
-                            ->where('id_cabang', $cabang)
                             ->where('id_marketing', $marketing)
                             ->get();
         }
@@ -406,7 +397,7 @@ class CetakLaporanController extends Controller
         $this->pdfReportGenerator('laporan_pengiriman_pesanan.pdf', 'Laporan Pengiriman Pesanan', 'laporan-pengiriman-pesanan', $data, $data2);
     }
 
-    public function laporanPesananPenjualan($dari, $sampai, $cabang, $marketing) {
+    public function laporanPesananPenjualan($dari, $sampai, $marketing) {
         $data_marketing = User::findOrFail($marketing);
 
         if($sampai === 'x') {
@@ -419,13 +410,11 @@ class CetakLaporanController extends Controller
         if($sampai === 'x') {
             $data = PesananPenjualan::with('pelanggan', 'penjual', 'syaratPembayaran', 'cabang')
                             ->where('created_at', $dari)
-                            ->where('id_cabang', $cabang)
                             ->where('id_penjual', $marketing)
                             ->get();
         } else {
             $data = PesananPenjualan::with('pelanggan', 'penjual', 'syaratPembayaran', 'cabang')
                             ->whereBetween('created_at', [$dari, $sampai])
-                            ->where('id_cabang', $cabang)
                             ->where('id_penjual', $marketing)
                             ->get();
         }
