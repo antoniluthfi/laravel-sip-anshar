@@ -102,7 +102,7 @@ foreach($data as $val) {
     </table>
 
     <div class="float-right w-40">
-        <p class="lead-2 text-center">Marketing</p>
+        <p class="lead-2 text-center">Pengguna Sistem</p>
         <hr class=" mt-6" style="width: 80%">
         <p class="lead-2 mt-0 text-center">{{ ucwords($nama_admin) }}</p>
     </div>

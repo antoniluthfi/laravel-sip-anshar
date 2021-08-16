@@ -78,7 +78,7 @@
     </table>
 
     <div class="float-right" style="width: 30%">
-        <p class="lead-2 text-center">Marketing</p>
+        <p class="lead-2 text-center">Pengguna Sistem</p>
         <hr class=" mt-6" style="width: 80%">
         <p class="lead-2 mt-0 text-center">{{ ucwords($data->pesananPenjualan->penjual->name) }}</p>    
     </div>
