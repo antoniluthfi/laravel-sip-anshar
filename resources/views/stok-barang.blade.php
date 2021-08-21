@@ -1,5 +1,6 @@
 @php
 error_reporting(0);
+$now = date("d M Y");
 @endphp
 
 <!DOCTYPE html>
@@ -29,10 +30,21 @@ error_reporting(0);
     </nav><br> 
 
     <h3 class="display-5">Laporan Stok Barang</h3>
+    <div class="container mb-4">
+        <div class="row">
+            <div class="float-left" style="width: 30%;">  
+                <p class="lead-2 ml-1 mt-0 mb-0 p-0">Tanggal</p>
+            </div>
+            <div class="float-right" style="width: 69%;">
+                <p class="lead-2 ml-1 mt-0 mb-0 p-0">: {{ $now }}</p>
+            </div>
+        </div>
+    </div>
+
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th class="display-6"><strong>#</strong></th>
+                <th class="display-6"><strong>No</strong></th>
                 <th class="display-6"><strong>Nama Barang</strong></th>
                 <th class="display-6"><strong>Kategori</strong></th>
                 <th class="display-6"><strong>Harga User</strong></th>

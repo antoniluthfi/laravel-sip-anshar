@@ -60,7 +60,7 @@ foreach($data as $val) {
         <table class="table table-bordered">
             <thead>
                 <tr class="table-dark">
-                    <th scope="col"><strong>#</strong></th>
+                    <th scope="col"><strong>No</strong></th>
                     <th scope="col"><strong>No Nota</strong></th>
                     <th scope="col"><strong>Pelanggan</strong></th>
                     <th scope="col"><strong>Barang/Jasa</strong></th>

@@ -43,7 +43,7 @@
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th class="display-6"><strong>#</strong></th>
+                <th class="display-6"><strong>No</strong></th>
                 <th class="display-6"><strong>Nama</strong></th>
                 <th class="display-6"><strong>Email</strong></th>
                 <th class="display-6"><strong>Nomor HP</strong></th>
@@ -70,7 +70,7 @@
     </table>
 
     <div class="float-right w-40">
-        <p class="lead-2 text-center">Admin</p>
+        <p class="lead-2 text-center">Pengguna Sistem</p>
         <hr class=" mt-6" style="width: 80%">
         <p class="lead-2 mt-0 text-center">{{ ucwords($nama_admin) }}</p>
     </div>

@@ -100,7 +100,7 @@ for ($i = 0; $i < count($data); $i++) {
             <table class="table table-bordered">
                 <thead>
                     <tr class="table-active">
-                        <th scope="col" style="width: 40px;">#</th>
+                        <th scope="col" style="width: 40px;">No</th>
                         <th scope="col" class="text-left" style="width: 300px;">{{ $sandi_transaksi }}</th>
                         <th scope="col">Tanggal</th> 
                         <th scope="col">Kas Tunai/Bank</th> 

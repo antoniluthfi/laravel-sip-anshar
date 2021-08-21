@@ -44,7 +44,7 @@ $now = date("d m Y");
         <table class="table table-bordered mt-0 mb-0">
             <thead>
                 <tr>
-                    <th scope="col">#</th>
+                    <th scope="col">No</th>
                     <th scope="col">Nama Barang</th>
                     <th scope="col">Serial Number</th>
                     <th scope="col">Barang/Jasa</th>

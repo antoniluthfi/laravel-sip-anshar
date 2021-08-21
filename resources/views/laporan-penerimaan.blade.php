@@ -52,11 +52,12 @@ $sampai = date("d M Y", $sampai);
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th class="display-6"><strong>#</strong></th>
+                <th class="display-6"><strong>No</strong></th>
                 <th class="display-6"><strong>No Servis</strong></th>
                 <th class="display-6"><strong>Cabang</strong></th>
                 <th class="display-6"><strong>Pelanggan</strong></th>
                 <th class="display-6"><strong>Barang Jasa</strong></th>
+                <th class="display-6"><strong>Tanggal Diterima</strong></th>
 
                 @if ($dari !== $sampai)
                     <th class="display-6"><strong>Tanggal Dibuat</strong></th>

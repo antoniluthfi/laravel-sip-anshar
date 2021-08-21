@@ -58,7 +58,7 @@ foreach($data as $val) {
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th class="display-6"><strong>#</strong></th>
+                <th class="display-6"><strong>No</strong></th>
                 <th class="display-6"><strong>Kode Pesanan</strong></th>
                 <th class="display-6"><strong>Pelanggan</strong></th>
                 <th class="display-6"><strong>Cabang</strong></th>
