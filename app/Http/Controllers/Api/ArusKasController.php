@@ -67,7 +67,7 @@ class ArusKasController extends Controller
         return response()->json([
             'status' => 'OK',
             'errors' => null,
-            'message' => 'Data berhasil dibuat',
+            'message' => 'Data berhasil dihapus',
             'result' => null
         ], 200);
     }

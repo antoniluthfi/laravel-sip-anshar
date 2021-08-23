@@ -17,12 +17,13 @@ use PDF;
 
 class CetakLaporanController extends Controller
 {
-    public function cetakLaporan($tipeLaporan, $str = null)
+    public function cetakLaporan($tipeLaporan, $str = null, $str2 = null) // str = role, str2 = nama user
     {
         // dd($tipeLaporan);
         if($tipeLaporan === 'stok-barang') {
             $data = StokBarang::with('detailStokBarang')->get();
             $array = [
+                'nama_admin' => $str,
                 'data' => $data,
                 'total' => $data->count()
             ];
@@ -34,8 +35,9 @@ class CetakLaporanController extends Controller
             } else {
                 $data = User::where('hak_akses', 'user')->orWhere('hak_akses', 'reseller')->get();
             }
-
+            
             $array = [
+                'nama_admin' => $str2,
                 'data' => $data,
                 'role' => $str,
                 'total' => $data->count()
@@ -46,6 +48,7 @@ class CetakLaporanController extends Controller
                         ->get();
             // dd($data);
             $array = [
+                'nama_admin' => $str,
                 'data' => $data,
                 'total' => $data->count()
             ];

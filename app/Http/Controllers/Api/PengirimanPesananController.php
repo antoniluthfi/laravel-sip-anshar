@@ -119,7 +119,7 @@ class PengirimanPesananController extends Controller
 
     public function delete($id)
     {
-        $pengirimanPesanan = PengirimanPesanan::where('kode_pengiriman', $id)->first();
+        $pengirimanPesanan = PengirimanPesanan::where('kode_pesanan', $id)->first();
         $fakturPenjualan = FakturPenjualan::where('kode_pesanan', $pengirimanPesanan->kode_pesanan)->first();
         
         if($fakturPenjualan) {

@@ -44,7 +44,7 @@ class SyaratPembayaranController extends Controller
     public function update(Request $request, $id)
     {
         $syaratPembayaran = SyaratPembayaran::find($id);
-        $syaratPembayaran->fill($request->nama)->save();
+        $syaratPembayaran->fill($request->all())->save();
 
         return response()->json([
             'status' => 'OK',

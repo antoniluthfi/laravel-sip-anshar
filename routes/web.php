@@ -19,9 +19,9 @@ Route::get('/', function () {
 });
 
 
-Route::get('/laporan/barang/{tipeLaporan}', [CetakLaporanController::class, 'cetakLaporan']);
-Route::get('/laporan/pelanggan/{tipeLaporan}', [CetakLaporanController::class, 'cetakLaporan']);
-Route::get('/laporan/pelanggan/{tipeLaporan}/role/{role}', [CetakLaporanController::class, 'cetakLaporan']);
+Route::get('/laporan/barang/{tipeLaporan}/user/{user}', [CetakLaporanController::class, 'cetakLaporan']);
+Route::get('/laporan/pelanggan/{tipeLaporan}/user/{user}', [CetakLaporanController::class, 'cetakLaporan']);
+Route::get('/laporan/pelanggan/{tipeLaporan}/role/{role}/user/{user}', [CetakLaporanController::class, 'cetakLaporan']);
 Route::get('/laporan/transaksi/{tipeLaporan}/id/{id}', [CetakLaporanController::class, 'cetakLaporan']);
 
 Route::get('tanda-terima-service/{no_service}', [CetakLaporanController::class, 'tandaTerimaService']);

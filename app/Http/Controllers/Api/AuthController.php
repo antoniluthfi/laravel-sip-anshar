@@ -15,7 +15,7 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password, 'status' => 'aktif'])) {
-            $user = Auth::user();                
+            $user = User::with('cabang')->findOrFail(Auth::id());                
             $success['user'] = $user;
             $success['token'] = $user->createToken('sip', [])->accessToken;
 
