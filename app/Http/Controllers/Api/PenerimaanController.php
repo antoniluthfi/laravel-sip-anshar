@@ -104,8 +104,41 @@ class PenerimaanController extends Controller
     public function update(Request $request, $no_service)
     {
         $penerimaan = Penerimaan::where('no_service', $no_service)->first();
-        $input = $request->all();
-        $penerimaan->fill($input)->save();
+        if($penerimaan) {
+            $penerimaan->update([
+                'id_customer' => $request->id_customer,
+                'id_barang_jasa' => $request->id_barang_jasa,
+                'id_barang' => $request->id_barang,
+                'kondisi_barang' => $request->kondisi_barang,
+                'problem' => $request->problem,
+                'request' => $request->permintaan,
+                'data_penting' => $request->data_penting,
+                'estimasi' => $request->estimasi,
+                'sn' => $request->sn,
+                'kelengkapan' => $request->kelengkapan
+            ]);
+            
+            // hapus teknisi pj
+            $pj = TeknisiPJ::where('no_pengerjaan', $penerimaan->no_pengerjaan)->get();
+            foreach ($pj as $val) {
+                $val->delete();
+            }
+    
+            // buat teknisi pj baru
+            if(count($request->teknisi) > 1) {
+                foreach($request->teknisi as $teknisi) {
+                    TeknisiPJ::create([
+                        'no_pengerjaan' => $penerimaan->no_pengerjaan,
+                        'id_teknisi' => $teknisi['id']
+                    ]);
+                }
+            } else {
+                TeknisiPJ::create([
+                    'no_pengerjaan' => $penerimaan->no_pengerjaan,
+                    'id_teknisi' => $request->teknisi[0]['id']
+                ]);
+            }
+        }
 
         return response()->json([
             'status' => 'OK',
